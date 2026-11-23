@@ -1,8 +1,13 @@
-<div id ="footer">
+<div id="footer">
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <span>© Copyright 2019 News | Powered by <a href="http://www.yahoobaba.net/">Yahoo Baba</a></span>
+                <span>
+                    <i class="fa-regular fa-copyright" aria-hidden="true"></i>
+                    <?php echo date('Y'); ?> News Site
+                    &nbsp;|&nbsp;
+                    Built by <a href="https://github.com/muhammadadi-iL" target="_blank" rel="noopener">Muhammad Adil</a>
+                </span>
             </div>
         </div>
     </div>

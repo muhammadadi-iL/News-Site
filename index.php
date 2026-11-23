@@ -3,102 +3,98 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-8">
-                    <!-- post-container -->
                     <div class="post-container">
-
+                        <h2 class="page-heading"><i class="fa-solid fa-newspaper" aria-hidden="true"></i> Latest News</h2>
                         <?php
                         include "config.php";
 
                         $limit = 3;
-                 
-                        if(isset($_GET ['page'])){
-                           $page = $_GET ['page'];
-                        }
-                        else{
-                           $page = 1;
+
+                        if (isset($_GET['page'])) {
+                            $page = (int) $_GET['page'];
+                        } else {
+                            $page = 1;
                         }
                         $offset = ($page - 1) * $limit;
 
-                        $sql = "SELECT posts.id, posts.post_title, posts.post_keywords, posts.post_date, posts.post_author, category.category_name, users.username, posts.post_content FROM posts  
+                        $sql = "SELECT posts.id, posts.post_title, posts.post_keywords, posts.post_date, posts.post_author, posts.post_image, category.category_name, users.username, posts.post_content FROM posts
                         LEFT JOIN category ON posts.post_content = category.id
                         LEFT JOIN users ON posts.post_author = users.id
                         ORDER BY posts.id DESC LIMIT {$offset}, {$limit}";
 
-                        $result = mysqli_query($conn ,$sql) or die ("query failed.");
-                        if(mysqli_num_rows($result) > 0){
-                            while($row = mysqli_fetch_assoc($result)){
-
+                        $result = mysqli_query($conn, $sql) or die("query failed.");
+                        if (mysqli_num_rows($result) > 0) {
+                            while ($row = mysqli_fetch_assoc($result)) {
+                                $img = !empty($row['post_image']) ? "images/" . $row['post_image'] : "images/post-format.jpg";
+                                if (!file_exists(__DIR__ . "/" . $img)) {
+                                    $img = "images/post-format.jpg";
+                                }
                         ?>
-
                         <div class="post-content">
                             <div class="row">
                                 <div class="col-md-4">
-                                    <a class="post-img" href="single.php?id=<?php echo $row['id']; ?>"><img src="images/post-format.jpg" alt=""/></a>
+                                    <a class="post-img" href="single.php?id=<?php echo $row['id']; ?>">
+                                        <img src="<?php echo htmlspecialchars($img); ?>" alt=""/>
+                                    </a>
                                 </div>
                                 <div class="col-md-8">
                                     <div class="inner-content clearfix">
-                                        <h3><a href='single.php?id=<?php echo $row['id']; ?>'><?php echo $row['post_title']; ?></a></h3>
+                                        <h3><a href="single.php?id=<?php echo $row['id']; ?>"><?php echo htmlspecialchars($row['post_title']); ?></a></h3>
                                         <div class="post-information">
                                             <span>
-                                                <i class="fa fa-tags" aria-hidden="true"></i>
-                                                <a href='category.php?cid=<?php echo $row['post_content']; ?>'><?php echo $row['category_name']; ?></a>
+                                                <i class="fa-solid fa-tags" aria-hidden="true"></i>
+                                                <a href="category.php?cid=<?php echo $row['post_content']; ?>"><?php echo htmlspecialchars($row['category_name']); ?></a>
                                             </span>
                                             <span>
-                                                <i class="fa fa-user" aria-hidden="true"></i>
-                                                <a href='author.php?aid=<?php echo $row['post_author']; ?>'><?php echo $row['username']; ?></a>
+                                                <i class="fa-solid fa-user" aria-hidden="true"></i>
+                                                <a href="author.php?aid=<?php echo $row['post_author']; ?>"><?php echo htmlspecialchars($row['username']); ?></a>
                                             </span>
                                             <span>
-                                                <i class="fa fa-calendar" aria-hidden="true"></i>
-                                                <?php echo $row['post_date']; ?>
+                                                <i class="fa-regular fa-calendar-days" aria-hidden="true"></i>
+                                                <?php echo htmlspecialchars($row['post_date']); ?>
                                             </span>
                                         </div>
                                         <p class="description">
-                                        <?php echo substr($row['post_keywords'],0,130) . "..."; ?>
+                                            <?php echo htmlspecialchars(substr($row['post_keywords'], 0, 130)) . "..."; ?>
                                         </p>
-                                        <a class='read-more pull-right' href='single.php?id=<?php echo $row['id']; ?>'>read more</a>
+                                        <a class="read-more pull-right" href="single.php?id=<?php echo $row['id']; ?>">
+                                            read more <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                                        </a>
                                     </div>
                                 </div>
                             </div>
-                            </div>
-                            
+                        </div>
                         <?php
                             }
+                        } else {
+                            echo "<p class='empty-state'><i class='fa-regular fa-folder-open'></i> No Record Found</p>";
                         }
-                        else{
-                            echo "No Record Found";
-                        }
-                        
-                        $sql1 = "SELECT * FROM POSTS";
-                        $result1 = mysqli_query($conn,$sql1) or die ('Query Failed.');
-       
-                        if(mysqli_num_rows($result1) > 0){
-                           $total_record = mysqli_num_rows($result1);
-                           
-                           $total_page = ceil($total_record / $limit);
-       
-                           echo"<ul class='pagination admin-pagination'>";
-       
-                           if($page > 1){
-                               echo '<li><a href="index.php?page='.($page - 1).'"><i class="fa fa-angle-double-left" aria-hidden="true"></i></a></li>';
-                           }
-       
-                           for($i = 1; $i <= $total_page; $i++){
-                               if($i == $page){
-                                   $active = "active";
-                               }
-                               else{
-                                   $active = null;
-                               }
-                               echo'<li class="'.$active.'"><a href="index.php?page='.$i.'">'.$i.'</a></li>';
-                           }
-                           if($total_page > $page){
-                               echo '<li><a href="index.php?page='.($page + 1).'"><i class="fa fa-angle-double-right" aria-hidden="true"></i></i></a></li>';
-                           }
-                           
-                           echo "</ul>";
+
+                        $sql1 = "SELECT * FROM posts";
+                        $result1 = mysqli_query($conn, $sql1) or die('Query Failed.');
+
+                        if (mysqli_num_rows($result1) > 0) {
+                            $total_record = mysqli_num_rows($result1);
+                            $total_page = ceil($total_record / $limit);
+
+                            echo "<ul class='pagination admin-pagination'>";
+
+                            if ($page > 1) {
+                                echo '<li><a href="index.php?page=' . ($page - 1) . '"><i class="fa-solid fa-angles-left" aria-hidden="true"></i></a></li>';
+                            }
+
+                            for ($i = 1; $i <= $total_page; $i++) {
+                                $active = ($i == $page) ? "active" : "";
+                                echo '<li class="' . $active . '"><a href="index.php?page=' . $i . '">' . $i . '</a></li>';
+                            }
+                            if ($total_page > $page) {
+                                echo '<li><a href="index.php?page=' . ($page + 1) . '"><i class="fa-solid fa-angles-right" aria-hidden="true"></i></a></li>';
+                            }
+
+                            echo "</ul>";
                         }
                         ?>
-                    </div><!-- /post-container -->
+                    </div>
                 </div>
                 <?php include 'sidebar.php'; ?>
             </div>

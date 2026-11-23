@@ -16,7 +16,7 @@
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
         <title>ADMIN | Login</title>
         <link rel="stylesheet" href="../css/bootstrap.min.css" />
-        <link rel="stylesheet" href="font/font-awesome-4.7.0/css/font-awesome.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
         <link rel="stylesheet" href="../css/style.css">
     </head>
 
@@ -25,19 +25,19 @@
             <div class="container">
                 <div class="row">
                     <div class="col-md-offset-4 col-md-4">
-                        <img class="logo" src="images/news.jpg">
-                        <h3 class="heading">Admin</h3>
+                        <img class="logo" src="images/news.jpg" alt="News Site">
+                        <h3 class="heading"><i class="fa-solid fa-lock" aria-hidden="true"></i> Admin Login</h3>
                         <!-- Form Start -->
                         <form  action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']);?>" method ="POST">
                             <div class="form-group">
-                                <label>Username</label>
-                                <input type="text" name="username" class="form-control" placeholder="" required>
+                                <label><i class="fa-solid fa-user" aria-hidden="true"></i> Username</label>
+                                <input type="text" name="username" class="form-control" placeholder="admin" required>
                             </div>
                             <div class="form-group">
-                                <label>Password</label>
-                                <input type="password" name="password" class="form-control" placeholder="" required>
+                                <label><i class="fa-solid fa-key" aria-hidden="true"></i> Password</label>
+                                <input type="password" name="password" class="form-control" placeholder="••••••" required>
                             </div>
-                            <input type="submit" name="login" class="btn btn-primary" value="login" />
+                            <input type="submit" name="login" class="btn btn-primary" value="Login" />
                         </form>
                         <!-- /Form  End -->
                         <?php
@@ -51,18 +51,16 @@
                             $result = mysqli_query($conn, $sql) or die("Query Failed");
 
                             if(mysqli_num_rows($result) > 0){
-
-                            while($row = mysqli_fetch_assoc($result)){
-                                    session_start();
+                                while($row = mysqli_fetch_assoc($result)){
                                     $_SESSION["username"] = $row['username'];
                                     $_SESSION["id"] = $row['id'];
                                     $_SESSION["role"] = $row['role'];
                                     header("Location: {$hostname}/admin/post.php");
+                                    exit;
                                 }
+                            } else {
+                                echo '<div class="alert alert-danger">Username and password do not match.</div>';
                             }
-                        }
-                        else{
-                            // echo '<div class="alert alert-danger">Username And Password Are Not Matched.</div>';
                         }
                         ?>
                     </div>

@@ -1,116 +1,66 @@
--- phpMyAdmin SQL Dump
--- version 4.9.2
--- https://www.phpmyadmin.net/
---
--- Host: 127.0.0.1
--- Generation Time: Jan 02, 2020 at 10:11 AM
--- Server version: 10.4.10-MariaDB
--- PHP Version: 7.3.12
+-- News Site CMS — schema matching the PHP app (posts / category / users)
+-- Import: mysql -u root < database/news-cms.sql
 
+SET NAMES utf8mb4;
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
+CREATE DATABASE IF NOT EXISTS `news_site` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE `news_site`;
 
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
+DROP TABLE IF EXISTS `posts`;
+DROP TABLE IF EXISTS `category`;
+DROP TABLE IF EXISTS `users`;
 
---
--- Database: `test`
---
-
--- --------------------------------------------------------
-
---
--- Table structure for table `category`
---
-
-CREATE TABLE `category` (
-  `category_id` int(11) NOT NULL,
-  `category_name` varchar(100) NOT NULL,
-  `post` int(11) NOT NULL DEFAULT 0
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `post`
---
-
-CREATE TABLE `post` (
-  `post_id` int(11) NOT NULL,
-  `title` varchar(100) NOT NULL,
-  `description` text NOT NULL,
-  `category` varchar(100) NOT NULL,
-  `post_date` varchar(50) NOT NULL,
-  `author` int(11) NOT NULL,
-  `post_img` varchar(100) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `user`
---
-
-CREATE TABLE `user` (
-  `user_id` int(10) UNSIGNED NOT NULL,
+CREATE TABLE `users` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `first_name` varchar(30) NOT NULL,
   `last_name` varchar(30) NOT NULL,
   `username` varchar(30) DEFAULT NULL,
   `password` varchar(40) DEFAULT NULL,
-  `role` int(11) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+  `role` int(11) NOT NULL COMMENT '1=Admin, 0=Normal',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Indexes for dumped tables
---
+CREATE TABLE `category` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `category_name` varchar(100) NOT NULL,
+  `post` int(11) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Indexes for table `category`
---
-ALTER TABLE `category`
-  ADD PRIMARY KEY (`category_id`);
+-- Note: `post_content` stores category id (legacy field name used by this project)
+CREATE TABLE `posts` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `post_title` varchar(200) NOT NULL,
+  `post_keywords` text NOT NULL,
+  `post_content` int(11) NOT NULL,
+  `post_date` varchar(50) NOT NULL,
+  `post_author` int(11) NOT NULL,
+  `post_image` varchar(255) NOT NULL DEFAULT 'post-format.jpg',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Indexes for table `post`
---
-ALTER TABLE `post`
-  ADD PRIMARY KEY (`post_id`),
-  ADD UNIQUE KEY `post_id` (`post_id`);
+-- Default admin: username=admin  password=admin  (MD5)
+INSERT INTO `users` (`id`, `first_name`, `last_name`, `username`, `password`, `role`) VALUES
+(1, 'Muhammad', 'Adil', 'admin', '21232f297a57a5a743894a0e4a801fc3', 1),
+(2, 'News', 'Editor', 'editor', '5aee9dbd2a188839105073571bee1b1f', 0);
 
---
--- Indexes for table `user`
---
-ALTER TABLE `user`
-  ADD PRIMARY KEY (`user_id`);
+INSERT INTO `category` (`id`, `category_name`, `post`) VALUES
+(1, 'Politics', 2),
+(2, 'Sports', 2),
+(3, 'Business', 1),
+(4, 'Entertainment', 1),
+(5, 'Technology', 1);
 
---
--- AUTO_INCREMENT for dumped tables
---
+INSERT INTO `posts` (`id`, `post_title`, `post_keywords`, `post_content`, `post_date`, `post_author`, `post_image`) VALUES
+(1, 'City council passes new transit plan', 'Local leaders approved a multi-year transit expansion that will add new bus routes and upgrade existing stations across the metro area. Residents can expect phased construction starting next spring.', 1, '15 Nov, 2026', 1, 'post_1.jpg'),
+(2, 'National team clinches tournament berth', 'A late equalizer and a dramatic penalty shootout sent the national side into the continental finals. Fans gathered downtown to celebrate the hard-fought victory.', 2, '16 Nov, 2026', 1, 'post-format.jpg'),
+(3, 'Markets steady after policy update', 'Equity markets closed mixed after the central bank held rates steady. Analysts say consumer spending and jobs data remain the key watchpoints for investors this quarter.', 3, '18 Nov, 2026', 2, 'post_1.jpg'),
+(4, 'Streaming hit renews for another season', 'The breakout drama series has been renewed after strong viewership numbers. Cast and creators confirmed production will resume early next year.', 4, '19 Nov, 2026', 1, 'post-format.jpg'),
+(5, 'Startups race to ship AI tools for newsrooms', 'Newsrooms are testing assistants that help with research, summaries, and metadata. Editors stress that human review stays essential for accuracy and trust.', 5, '20 Nov, 2026', 2, 'post_1.jpg'),
+(6, 'Weekend league finals draw record crowd', 'Stadium attendance hit a new high as two undefeated clubs met in the championship. Highlights and player interviews dominate sports coverage this week.', 2, '21 Nov, 2026', 1, 'post-format.jpg'),
+(7, 'Election commission confirms poll timetable', 'The commission published the official calendar for voter registration, candidate filing, and election day. Civic groups welcomed the early clarity for campaign planning.', 1, '22 Nov, 2026', 2, 'post_1.jpg');
 
---
--- AUTO_INCREMENT for table `category`
---
-ALTER TABLE `category`
-  MODIFY `category_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
-
---
--- AUTO_INCREMENT for table `post`
---
-ALTER TABLE `post`
-  MODIFY `post_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
-
---
--- AUTO_INCREMENT for table `user`
---
-ALTER TABLE `user`
-  MODIFY `user_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 COMMIT;
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

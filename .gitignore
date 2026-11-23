@@ -1,0 +1,7 @@
+.DS_Store
+admin/upload/*
+!admin/upload/index.php
+*.log
+.env
+.idea/
+.vscode/
