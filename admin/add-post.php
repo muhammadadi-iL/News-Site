@@ -5,11 +5,11 @@ include "config.php";
   <div id="admin-content">
       <div class="container">
          <div class="row">
-             <div class="col-md-12">
+             <div class="col-xs-12">
                  <h1 class="admin-heading"><i class="fa-solid fa-plus"></i> Add New Post</h1>
                  <p class="admin-sub">Create a news article with title, story, category and cover image.</p>
              </div>
-              <div class="col-md-offset-2 col-md-8">
+              <div class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
                   <form class="admin-form" action="save-post.php" method="POST" enctype="multipart/form-data">
                       <div class="form-group">
                           <label for="post_title"><i class="fa-solid fa-heading"></i> Title</label>

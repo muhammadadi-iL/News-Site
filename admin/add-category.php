@@ -26,10 +26,10 @@ if (isset($_POST['save'])) {
   <div id="admin-content">
       <div class="container">
           <div class="row">
-              <div class="col-md-12">
+              <div class="col-xs-12">
                   <h1 class="admin-heading"><i class="fa-solid fa-plus"></i> Add New Category</h1>
               </div>
-              <div class="col-md-offset-3 col-md-6">
+              <div class="col-xs-12 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">
                   <?php if ($error) { echo "<div class='alert alert-danger'>" . e($error) . "</div>"; } ?>
                   <form class="admin-form" action="<?php echo e($_SERVER['PHP_SELF']); ?>" method="POST" autocomplete="off">
                       <div class="form-group">

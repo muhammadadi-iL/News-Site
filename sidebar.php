@@ -1,4 +1,4 @@
-<div id="sidebar" class="col-md-4">
+<div id="sidebar" class="col-xs-12 col-sm-12 col-md-4">
     <div class="search-box-container">
         <h4><i class="fa-solid fa-magnifying-glass"></i> Search</h4>
         <form class="search-post" action="search.php" method="GET">

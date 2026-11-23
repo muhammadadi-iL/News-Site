@@ -13,6 +13,17 @@
   --shadow: 0 8px 24px rgba(28, 36, 48, 0.08);
 }
 
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
 body {
   background: var(--page);
   background-image:
@@ -20,6 +31,25 @@ body {
     linear-gradient(180deg, #f7f9fc 0%, var(--page) 40%);
   font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   color: var(--ink);
+  overflow-x: hidden;
+  min-width: 0;
+}
+
+img,
+video,
+iframe {
+  max-width: 100%;
+  height: auto;
+}
+
+.container {
+  width: 100%;
+  max-width: 1170px;
+}
+
+.row {
+  margin-left: -15px;
+  margin-right: -15px;
 }
 
 a,
@@ -102,6 +132,11 @@ img.logo {
 #admin-menubar {
   background-color: var(--surface);
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+}
+
+.admin-nav-toggle {
+  display: none;
+  margin-bottom: 0;
 }
 
 #admin-menubar .admin-menu {
@@ -267,6 +302,31 @@ form {
   position: sticky;
   top: 0;
   z-index: 50;
+}
+
+.nav-bar-inner {
+  position: relative;
+}
+
+.nav-toggle {
+  display: none;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border: 0;
+  background: #152033;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  padding: 12px 16px;
+  cursor: pointer;
+}
+
+.nav-toggle i {
+  font-size: 18px;
 }
 
 #menu-bar .menu > li {
@@ -908,9 +968,68 @@ i.fa-regular {
   border-radius: 14px;
 }
 
-@media (max-width: 767px) {
-  #logo {
-    width: 90%;
+/* ===================== */
+/* RESPONSIVE — all devices */
+/* phone · ipod · android · ipad · tablet · laptop · desktop */
+/* ===================== */
+
+/* Large desktop */
+@media (min-width: 1400px) {
+  .container {
+    width: 1320px;
+    max-width: 1320px;
+  }
+
+  .hero-feature {
+    min-height: 380px;
+  }
+
+  .hero-overlay h1 {
+    font-size: 40px;
+  }
+}
+
+/* Desktop / large laptop */
+@media (min-width: 1200px) and (max-width: 1399px) {
+  .container {
+    width: 1140px;
+  }
+}
+
+/* Laptop / small desktop */
+@media (min-width: 992px) and (max-width: 1199px) {
+  .container {
+    width: 960px;
+  }
+
+  .menu > li > a {
+    padding: 12px 12px;
+    font-size: 13px;
+  }
+
+  .hero-overlay {
+    padding: 36px 28px;
+  }
+
+  .hero-overlay h1 {
+    font-size: 30px;
+  }
+
+  #main-content .post-content h3 {
+    font-size: 19px;
+  }
+}
+
+/* Tablet / iPad portrait & landscape */
+@media (min-width: 768px) and (max-width: 991px) {
+  .container {
+    width: 100%;
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+
+  #header {
+    padding: 18px 10px;
   }
 
   .brand-lockup {
@@ -918,28 +1037,445 @@ i.fa-regular {
   }
 
   .brand-text strong {
-    font-size: 22px;
-  }
-
-  .hero-overlay {
-    padding: 28px 20px;
-  }
-
-  .hero-overlay h1 {
     font-size: 24px;
   }
 
-  #menu-bar .menu > li {
+  .nav-toggle,
+  .admin-nav-toggle {
+    display: flex;
+  }
+
+  #siteMenu,
+  #adminMenu {
+    display: none;
+    width: 100%;
+    text-align: left;
+    background: #121a27;
+  }
+
+  #siteMenu.is-open,
+  #adminMenu.is-open {
     display: block;
   }
 
+  #menu-bar .menu > li,
+  #admin-menubar .admin-menu li {
+    display: block;
+    margin: 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .menu > li > a,
+  #admin-menubar .admin-menu li a {
+    padding: 14px 16px;
+  }
+
+  .hero-feature {
+    min-height: 280px;
+    border-radius: 14px;
+  }
+
+  .hero-overlay {
+    padding: 30px 24px;
+    max-width: 100%;
+  }
+
+  .hero-overlay h1 {
+    font-size: 28px;
+  }
+
+  #main-content {
+    padding: 28px 0;
+  }
+
+  #main-content .post-container,
+  #sidebar .search-box-container,
+  #sidebar .recent-post-container {
+    padding: 20px;
+  }
+
   #main-content .post-content .post-img {
-    height: auto;
-    margin-bottom: 14px;
+    height: 160px;
+  }
+
+  #sidebar {
+    margin-top: 22px;
+  }
+
+  #admin-content .admin-heading {
+    font-size: 28px;
+  }
+
+  .add-new {
+    margin-top: 8px;
+  }
+
+  .admin-header-row {
+    text-align: center;
+  }
+
+  .text-right-sm {
+    text-align: center;
+    margin-top: 10px;
+  }
+
+  #header-admin .admin-logout {
+    margin: 0;
+  }
+
+  form.admin-form,
+  form {
+    padding: 20px;
+  }
+}
+
+/* Phones / iPod / small tablets */
+@media (max-width: 767px) {
+  .container {
+    width: 100%;
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+
+  #header {
+    padding: 14px 8px;
+    text-align: center;
+  }
+
+  #logo {
+    width: 100%;
+  }
+
+  .brand-lockup {
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .brand-lockup img {
+    width: 44px !important;
+    height: 44px;
+  }
+
+  .brand-text strong {
+    font-size: 20px;
+    letter-spacing: 1px;
+  }
+
+  .brand-text em {
+    font-size: 11px;
+  }
+
+  .nav-toggle,
+  .admin-nav-toggle {
+    display: flex;
+  }
+
+  #siteMenu,
+  #adminMenu {
+    display: none;
+    width: 100%;
+    text-align: left;
+    background: #121a27;
+  }
+
+  #siteMenu.is-open,
+  #adminMenu.is-open {
+    display: block;
+  }
+
+  #menu-bar .menu > li,
+  #admin-menubar .admin-menu li {
+    display: block;
+    margin: 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .menu > li > a,
+  #admin-menubar .admin-menu li a {
+    padding: 13px 14px;
+    font-size: 13px;
+  }
+
+  h2.page-heading {
+    font-size: 20px;
+    margin-bottom: 16px;
+  }
+
+  .hero-feature {
+    min-height: 0;
+    border-radius: 12px;
+    margin-bottom: 18px;
+  }
+
+  .hero-overlay {
+    padding: 22px 16px;
+    max-width: 100%;
+  }
+
+  .hero-overlay h1 {
+    font-size: 22px;
+  }
+
+  .hero-overlay p {
+    font-size: 14px;
+  }
+
+  .hero-meta {
+    gap: 8px;
+    font-size: 12px;
+  }
+
+  .hero-cta {
+    width: 100%;
+    text-align: center;
+  }
+
+  #main-content {
+    padding: 20px 0;
+    min-height: 0;
+  }
+
+  #main-content .post-container {
+    padding: 16px;
+    border-radius: 10px;
+  }
+
+  #main-content .post-content {
+    padding-bottom: 18px;
+    margin-bottom: 18px;
+  }
+
+  #main-content .post-content .post-img {
+    height: 190px;
+    margin-bottom: 12px;
+  }
+
+  #main-content .post-content h3 {
+    font-size: 18px;
+    line-height: 1.35;
+  }
+
+  #main-content .post-content a.read-more {
+    float: none !important;
+    display: inline-block;
+    margin-top: 4px;
+  }
+
+  #main-content .single-post h3 {
+    font-size: 22px;
   }
 
   #main-content .single-post img.single-feature-image {
     width: 100%;
+    max-height: 260px;
+  }
+
+  #sidebar {
+    margin-top: 18px;
+  }
+
+  #sidebar .search-box-container,
+  #sidebar .recent-post-container {
+    padding: 16px;
+  }
+
+  #sidebar .recent-post .post-img,
+  #sidebar .recent-post .post-content {
+    width: 100%;
+    display: block;
+  }
+
+  #sidebar .recent-post .post-img {
+    margin-bottom: 8px;
+  }
+
+  #sidebar .recent-post .post-content {
+    padding-left: 0;
+  }
+
+  #footer {
+    padding: 16px 10px;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  #footer span {
+    display: block;
+  }
+
+  .pagination li a {
+    min-width: 32px;
+    padding: 6px 10px;
+  }
+
+  /* Admin mobile */
+  #wrapper-admin {
+    padding: 28px 0 40px;
+  }
+
+  .admin-header-row,
+  .text-right-sm {
+    text-align: center;
+  }
+
+  .admin-brand {
+    justify-content: center;
+    width: 100%;
+    margin-bottom: 8px;
+  }
+
+  #header-admin .admin-logout {
+    display: inline-block;
+    margin: 0 0 4px;
+    font-size: 13px;
+  }
+
+  #admin-content {
+    padding: 16px 0 28px;
+    min-height: 0;
+  }
+
+  #admin-content .admin-heading {
+    font-size: 24px;
+  }
+
+  .admin-sub {
+    font-size: 13px;
+  }
+
+  .add-new {
+    margin: 0 0 14px;
+    width: 100%;
+  }
+
+  .content-table th,
+  .content-table td {
+    font-size: 12px;
+    padding: 8px 6px !important;
+  }
+
+  .table-thumb {
+    width: 48px;
+    height: 36px;
+  }
+
+  .title-cell {
+    min-width: 140px;
+  }
+
+  form,
+  .admin-form,
+  .login-card {
+    padding: 16px;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+
+  .form-actions .btn,
+  .form-actions .btn-default {
+    width: 100%;
+  }
+
+  .login-card .logo {
+    width: 64px;
+  }
+}
+
+/* Extra-small phones (iPhone SE / small Android) */
+@media (max-width: 480px) {
+  .brand-text em {
+    display: none;
+  }
+
+  .brand-text strong {
+    font-size: 18px;
+  }
+
+  .hero-overlay h1 {
+    font-size: 20px;
+  }
+
+  .hero-meta span {
+    width: 100%;
+  }
+
+  #main-content .post-content .post-img {
+    height: 160px;
+  }
+
+  #admin-content .content-table thead th:nth-child(4),
+  #admin-content .content-table tbody td:nth-child(4),
+  #admin-content .content-table thead th:nth-child(5),
+  #admin-content .content-table tbody td:nth-child(5) {
+    display: none;
+  }
+}
+
+/* Very small / iPod touch narrow */
+@media (max-width: 360px) {
+  .container {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .menu > li > a,
+  #admin-menubar .admin-menu li a {
+    font-size: 12px;
+  }
+
+  h2.page-heading {
+    font-size: 18px;
+  }
+}
+
+/* Landscape phones */
+@media (max-width: 900px) and (orientation: landscape) {
+  .hero-feature {
+    min-height: 220px;
+  }
+
+  .hero-overlay {
+    padding: 18px 20px;
+  }
+
+  .hero-overlay h1 {
+    font-size: 22px;
+  }
+}
+
+/* Touch-friendly tap targets */
+@media (hover: none) and (pointer: coarse) {
+  .menu > li > a,
+  #admin-menubar .admin-menu li a,
+  .action-btn,
+  .nav-toggle,
+  .read-more,
+  .hero-cta,
+  .add-new {
+    min-height: 44px;
+  }
+
+  .action-btn {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+/* Print */
+@media print {
+  #menu-bar,
+  #sidebar,
+  .nav-toggle,
+  .hero-cta,
+  #footer {
+    display: none !important;
+  }
+
+  #main-content .post-container {
+    box-shadow: none;
+    border: 0;
   }
 }
 

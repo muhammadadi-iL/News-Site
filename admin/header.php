@@ -8,7 +8,7 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
         <title>Admin Panel | News Site</title>
         <link rel="icon" href="../images/logo.png" type="image/png">
@@ -19,14 +19,14 @@
     <body class="admin-body">
         <div id="header-admin">
             <div class="container">
-                <div class="row vertical-center">
-                    <div class="col-md-4">
+                <div class="row admin-header-row">
+                    <div class="col-xs-12 col-sm-6">
                         <a class="admin-brand" href="post.php">
                             <img class="logo" src="../images/logo.png" alt="News Site">
                             <span>News Site <small>Admin</small></span>
                         </a>
                     </div>
-                    <div class="col-md-8 text-right">
+                    <div class="col-xs-12 col-sm-6 text-right-sm">
                         <a href="logout.php" class="admin-logout">
                             <i class="fa-solid fa-user-shield"></i>
                             <?php echo e($_SESSION["username"]); ?>
@@ -39,8 +39,12 @@
         <div id="admin-menubar">
             <div class="container">
                 <div class="row">
-                    <div class="col-md-12">
-                       <ul class="admin-menu">
+                    <div class="col-xs-12">
+                       <button type="button" class="nav-toggle admin-nav-toggle" id="adminNavToggle" aria-controls="adminMenu" aria-expanded="false" aria-label="Toggle admin menu">
+                           <i class="fa-solid fa-bars" aria-hidden="true"></i>
+                           <span>Admin Menu</span>
+                       </button>
+                       <ul class="admin-menu" id="adminMenu">
                             <li>
                                 <a href="<?php echo $hostname; ?>">
                                     <i class="fa-solid fa-globe"></i> View Site

@@ -2,14 +2,14 @@
   <div id="admin-content">
       <div class="container">
           <div class="row">
-              <div class="col-md-10">
+              <div class="col-xs-12 col-sm-8 col-md-10">
                   <h1 class="admin-heading"><i class="fa-solid fa-file-lines"></i> All Posts</h1>
                   <p class="admin-sub">Manage news articles — create, edit or delete.</p>
               </div>
-              <div class="col-md-2">
+              <div class="col-xs-12 col-sm-4 col-md-2">
                   <a class="add-new" href="add-post.php"><i class="fa-solid fa-plus"></i> Add Post</a>
               </div>
-              <div class="col-md-12">
+              <div class="col-xs-12">
                   <?php
                  include "config.php";
 

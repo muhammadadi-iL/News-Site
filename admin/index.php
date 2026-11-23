@@ -41,7 +41,7 @@ if (isset($_POST['login'])) {
         <div id="wrapper-admin" class="body-content">
             <div class="container">
                 <div class="row">
-                    <div class="col-md-offset-4 col-md-4">
+                    <div class="col-xs-12 col-sm-8 col-sm-offset-2 col-md-4 col-md-offset-4">
                         <div class="login-card">
                         <img class="logo" src="../images/logo.png" alt="News Site">
                         <h3 class="heading"><i class="fa-solid fa-lock"></i> Admin Login</h3>

@@ -31,7 +31,7 @@
             <?php } ?>
 
             <div class="row">
-                <div class="col-md-8">
+                <div class="col-xs-12 col-sm-12 col-md-8">
                     <div class="post-container">
                         <h2 class="page-heading"><i class="fa-solid fa-newspaper"></i> Latest News</h2>
                         <?php
@@ -51,12 +51,12 @@
                         ?>
                         <div class="post-content">
                             <div class="row">
-                                <div class="col-md-4">
+                                <div class="col-xs-12 col-sm-4">
                                     <a class="post-img" href="single.php?id=<?php echo (int) $row['id']; ?>">
                                         <img src="<?php echo e($img); ?>" alt=""/>
                                     </a>
                                 </div>
-                                <div class="col-md-8">
+                                <div class="col-xs-12 col-sm-8">
                                     <div class="inner-content clearfix">
                                         <h3><a href="single.php?id=<?php echo (int) $row['id']; ?>"><?php echo e($row['post_title']); ?></a></h3>
                                         <div class="post-information">

@@ -51,7 +51,7 @@ switch ($page) {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title><?php echo e($page_title); ?></title>
     <link rel="icon" href="images/logo.png" type="image/png">
@@ -63,7 +63,7 @@ switch ($page) {
 <div id="header">
     <div class="container">
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-xs-12">
                 <a href="<?php echo $hostname; ?>" id="logo" class="brand-lockup">
                     <img src="images/logo.png" alt="News Site">
                     <span class="brand-text">
@@ -78,33 +78,39 @@ switch ($page) {
 <div id="menu-bar">
     <div class="container">
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-xs-12">
             <?php
             $id = isset($_GET['cid']) ? (int) $_GET['cid'] : 0;
             $sql = "SELECT * FROM category ORDER BY category_name ASC";
             $result = mysqli_query($conn, $sql) or die("Query Failed : Category");
             ?>
-                <ul class="menu">
-                    <li>
-                        <a class="<?php echo ($page === 'index.php' && $id === 0) ? 'active' : ''; ?>" href="<?php echo $hostname; ?>">
-                            <i class="fa-solid fa-house"></i> Home
-                        </a>
-                    </li>
-                    <?php
-                    while ($row = mysqli_fetch_assoc($result)) {
-                        $active = ($id === (int) $row['id']) ? "active" : "";
-                        echo "<li><a class='{$active}' href='category.php?cid=" . (int) $row['id'] . "'>"
-                            . "<i class='fa-solid fa-bookmark'></i> "
-                            . e($row['category_name'])
-                            . "</a></li>";
-                    }
-                    ?>
-                    <li>
-                        <a href="admin/">
-                            <i class="fa-solid fa-gauge-high"></i> Admin
-                        </a>
-                    </li>
-                </ul>
+                <div class="nav-bar-inner">
+                    <button type="button" class="nav-toggle" id="navToggle" aria-controls="siteMenu" aria-expanded="false" aria-label="Toggle navigation">
+                        <i class="fa-solid fa-bars" aria-hidden="true"></i>
+                        <span>Menu</span>
+                    </button>
+                    <ul class="menu" id="siteMenu">
+                        <li>
+                            <a class="<?php echo ($page === 'index.php' && $id === 0) ? 'active' : ''; ?>" href="<?php echo $hostname; ?>">
+                                <i class="fa-solid fa-house"></i> Home
+                            </a>
+                        </li>
+                        <?php
+                        while ($row = mysqli_fetch_assoc($result)) {
+                            $active = ($id === (int) $row['id']) ? "active" : "";
+                            echo "<li><a class='{$active}' href='category.php?cid=" . (int) $row['id'] . "'>"
+                                . "<i class='fa-solid fa-bookmark'></i> "
+                                . e($row['category_name'])
+                                . "</a></li>";
+                        }
+                        ?>
+                        <li>
+                            <a href="admin/">
+                                <i class="fa-solid fa-gauge-high"></i> Admin
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>

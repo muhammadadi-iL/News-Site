@@ -25,11 +25,11 @@ if ((string) $_SESSION['role'] !== '1' && (int) $row['post_author'] !== (int) $_
 <div id="admin-content">
   <div class="container">
   <div class="row">
-    <div class="col-md-12">
+    <div class="col-xs-12">
         <h1 class="admin-heading"><i class="fa-solid fa-pen-to-square"></i> Update Post</h1>
         <p class="admin-sub">Edit story details and optionally replace the cover image.</p>
     </div>
-    <div class="col-md-offset-2 col-md-8">
+    <div class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
         <form class="admin-form" action="save-update-post.php" method="POST" enctype="multipart/form-data" autocomplete="off">
             <input type="hidden" name="id" value="<?php echo (int) $row['id']; ?>">
             <div class="form-group">
