@@ -58,6 +58,6 @@ INSERT INTO `posts` (`id`, `post_title`, `post_keywords`, `post_content`, `post_
 (4, 'Streaming hit renews for another season', 'The breakout drama series has been renewed after strong viewership numbers. Cast and creators confirmed production will resume early next year with new story arcs.', 4, '19 Nov, 2026', 1, 'post-entertainment.jpg'),
 (5, 'Startups race to ship AI tools for newsrooms', 'Newsrooms are testing assistants that help with research, summaries, and metadata. Editors stress that human review stays essential for accuracy and public trust.', 5, '20 Nov, 2026', 2, 'post-tech.jpg'),
 (6, 'Weekend league finals draw record crowd', 'Stadium attendance hit a new high as two undefeated clubs met in the championship. Highlights and player interviews dominate sports coverage this week.', 2, '21 Nov, 2026', 1, 'post-sports-2.jpg'),
-(7, 'Election commission confirms poll timetable', 'The commission published the official calendar for voter registration, candidate filing, and election day. Civic groups welcomed the early clarity for campaign planning.', 1, '22 Nov, 2026', 2, 'post-politics-2.jpg');
+(7, 'Election commission confirms poll timetable', 'The commission published the official calendar for voter registration, candidate filing, and election day. Civic groups welcomed the early clarity for campaign planning.', 1, '22 Nov, 2026', 2, 'post-featured.jpg');
 
 COMMIT;

@@ -40,8 +40,8 @@
                             <?php echo nl2br(e($row['post_keywords'])); ?>
                             </p>
                             <div class="article-actions">
-                                <a class="btn btn-soft" href="<?php echo $hostname; ?>"><i class="fa-solid fa-arrow-left"></i> Back to home</a>
-                                <a class="btn btn-brand" href="category.php?cid=<?php echo (int) $row['post_content']; ?>"><i class="fa-solid <?php echo $icon; ?>"></i> More in <?php echo e($row['category_name']); ?></a>
+                                <a class="btn btn-ghost" href="<?php echo $hostname; ?>"><i class="fa-solid fa-arrow-left"></i> Back to home</a>
+                                <a class="btn btn-accent" href="category.php?cid=<?php echo (int) $row['post_content']; ?>"><i class="fa-solid <?php echo $icon; ?>"></i> More in <?php echo e($row['category_name']); ?></a>
                             </div>
                         </article>
                         <?php

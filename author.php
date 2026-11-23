@@ -39,7 +39,7 @@
                                         <span class="meta-pill"><i class="fa-regular fa-calendar-days"></i> <?php echo e($row['post_date']); ?></span>
                                     </div>
                                     <p class="description"><?php echo e(substr($row['post_keywords'], 0, 130)) . "..."; ?></p>
-                                    <a class="btn btn-brand btn-sm" href="single.php?id=<?php echo (int) $row['id']; ?>">Read more <i class="fa-solid fa-arrow-right"></i></a>
+                                    <a class="btn btn-accent btn-sm" href="single.php?id=<?php echo (int) $row['id']; ?>">Continue reading <i class="fa-solid fa-arrow-right"></i></a>
                                 </div>
                             </div>
                         </article>

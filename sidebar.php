@@ -1,19 +1,19 @@
 <div id="sidebar" class="col-xs-12 col-sm-12 col-md-4">
-    <div class="search-box-container side-card">
-        <h4><i class="fa-solid fa-magnifying-glass"></i> Search</h4>
+    <div class="side-card search-box-container">
+        <h4>Search the archive</h4>
         <form class="search-post" action="search.php" method="GET">
             <div class="search-row">
-                <input type="text" name="search" class="form-control" placeholder="Search news..." value="<?php echo isset($_GET['search']) ? e($_GET['search']) : ''; ?>">
-                <button type="submit" class="btn btn-brand">
+                <input type="text" name="search" class="form-control" placeholder="Find a headline..." value="<?php echo isset($_GET['search']) ? e($_GET['search']) : ''; ?>">
+                <button type="submit" class="btn btn-accent">
                     <i class="fa-solid fa-magnifying-glass"></i>
-                    <span>Search</span>
+                    <span>Go</span>
                 </button>
             </div>
         </form>
     </div>
 
-    <div class="recent-post-container side-card">
-        <h4><i class="fa-solid fa-clock-rotate-left"></i> Recent Posts</h4>
+    <div class="side-card recent-post-container">
+        <h4>Recent Posts</h4>
         <?php
         include "config.php";
         $limit = 4;
@@ -31,20 +31,9 @@
                 <img src="<?php echo e($img); ?>" alt=""/>
             </a>
             <div class="post-content">
+                <p class="story-eyebrow"><i class="fa-solid <?php echo $icon; ?>"></i> <?php echo e($row['category_name']); ?></p>
                 <h5><a href="single.php?id=<?php echo (int) $row['id']; ?>"><?php echo e($row['post_title']); ?></a></h5>
-                <div class="meta-row">
-                    <span class="meta-pill">
-                        <i class="fa-solid <?php echo $icon; ?>"></i>
-                        <a href="category.php?cid=<?php echo (int) $row['post_content']; ?>"><?php echo e($row['category_name']); ?></a>
-                    </span>
-                    <span class="meta-pill">
-                        <i class="fa-regular fa-calendar-days"></i>
-                        <?php echo e($row['post_date']); ?>
-                    </span>
-                </div>
-                <a class="btn btn-soft btn-xs" href="single.php?id=<?php echo (int) $row['id']; ?>">
-                    Read more <i class="fa-solid fa-arrow-right"></i>
-                </a>
+                <span class="recent-date"><i class="fa-regular fa-calendar-days"></i> <?php echo e($row['post_date']); ?></span>
             </div>
         </div>
                 <?php
