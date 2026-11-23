@@ -975,8 +975,10 @@ img.logo { width: 100%; height: auto; display: block; }
 
 @media (max-width: 767px) {
   .header-inner { flex-wrap: wrap; }
-  .header-actions { width: 100%; }
-  .header-actions .btn { flex: 1; }
+  .header-actions { width: auto; margin-left: auto; }
+  .header-actions .btn { flex: 0 0 auto; }
+  /* Phone: keep autocomplete in sidebar so header stays compact */
+  .header-vue-search { display: none; }
   .brand-text strong { font-size: 22px; }
   .brand-text em { display: none; }
 

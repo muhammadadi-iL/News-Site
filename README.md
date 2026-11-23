@@ -9,7 +9,7 @@ Practice news website in **native PHP + MySQL** (Bootstrap front end, admin pane
 | Local URL | http://localhost/news-site/ |
 | Admin URL | http://localhost/news-site/admin/ |
 | Stack | Homebrew PHP 8.x + Apache (`httpd`) + MySQL + **Vue 3** (CDN) |
-| Live APIs | `api/live-news.php` · `api/search-suggest.php` (BBC / NPR / Guardian RSS) |
+| Live APIs | `api/live-news.php` · `api/search-suggest.php` (BBC / NPR / Guardian / NYT RSS, 90s cache) |
 
 ---
 
@@ -216,7 +216,7 @@ Front + admin **Font Awesome 6** (CDN) use karte hain — house, tags, calendar,
 
 - **Vue 3** CDN + `js/news-app.js` — header/sidebar pe **autocomplete search**, home pe **Live from the web** feed.
 - Autocomplete local DB posts + live RSS headlines mix karta hai (`api/search-suggest.php`).
-- Live feed BBC / NPR / Guardian RSS se pull hota hai (`api/live-news.php`), har ~3 min auto-refresh.
+- Live feed BBC / NPR / Guardian RSS se pull hota hai (`api/live-news.php`); NPR fail ho to NYTimes fallback. File cache `cache/live-news.json` (~90s) autocomplete ko fast rakhta hai. Front har ~3 min refresh karta hai.
 - PHP `allow_url_fopen` on hona chahiye (RSS fetch ke liye).
 
 Quick API check:
@@ -246,7 +246,8 @@ News-Site/
 │   └── search-suggest.php # autocomplete suggestions
 ├── includes/
 │   ├── helpers.php
-│   └── live_feed.php  # RSS fetch (BBC/NPR/Guardian)
+│   └── live_feed.php  # RSS fetch + 90s file cache
+├── cache/             # live-news.json (gitignored)
 ├── js/news-app.js     # Vue SearchAutocomplete + LiveNewsFeed
 ├── admin/             # login, posts, categories, users
 ├── css/               # bootstrap + style.css

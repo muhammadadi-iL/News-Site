@@ -1,7 +1,10 @@
 .DS_Store
 admin/upload/*
 !admin/upload/index.php
+cache/*
+!cache/.gitkeep
 *.log
 .env
 .idea/
 .vscode/
+images/hero-temp.jpg

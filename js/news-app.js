@@ -2,14 +2,12 @@
  * Vue 3 — live headlines + search autocomplete for News Site
  */
 (function () {
-  const { createApp, ref, computed, watch, onMounted, onBeforeUnmount } = Vue;
+  const { createApp, ref, computed, onMounted, onBeforeUnmount } = Vue;
 
   function apiBase() {
     const meta = document.querySelector('meta[name="news-api-base"]');
     if (meta && meta.content) return meta.content.replace(/\/$/, '');
-    // fallback: /news-site/api from current path
     const parts = window.location.pathname.split('/');
-    // e.g. /news-site/index.php → /news-site/api
     if (parts.length >= 2 && parts[1]) {
       return '/' + parts[1] + '/api';
     }
@@ -131,7 +129,7 @@
                 @blur="onBlur"
                 placeholder="Search local + live headlines..."
                 aria-autocomplete="list"
-                aria-expanded="hasSuggestions"
+                :aria-expanded="hasSuggestions ? 'true' : 'false'"
                 role="combobox"
               />
               <div v-if="loading" class="vue-search-spinner"><i class="fa-solid fa-circle-notch fa-spin"></i></div>
@@ -170,19 +168,28 @@
       const loading = ref(true);
       const error = ref('');
       const fetchedAt = ref('');
+      const sources = ref([]);
       let refreshTimer = null;
 
-      async function load() {
-        loading.value = true;
+      async function load(force) {
+        const firstLoad = items.value.length === 0;
+        if (firstLoad) loading.value = true;
         error.value = '';
         try {
-          const res = await fetch(apiBase() + '/live-news.php?limit=' + props.limit);
+          const qs = '?limit=' + props.limit + (force ? '&refresh=1' : '');
+          const res = await fetch(apiBase() + '/live-news.php' + qs);
           const data = await res.json();
           if (!data.ok) throw new Error('Feed unavailable');
           items.value = data.items || [];
           fetchedAt.value = data.fetched_at || '';
+          sources.value = Array.isArray(data.sources) ? data.sources : [];
+          if (!items.value.length) {
+            error.value = 'No live headlines available right now.';
+          }
         } catch (e) {
-          error.value = 'Could not load live headlines right now.';
+          if (!items.value.length) {
+            error.value = 'Could not load live headlines right now.';
+          }
         } finally {
           loading.value = false;
         }
@@ -197,28 +204,45 @@
         }
       }
 
+      const sourceLabel = computed(() => {
+        if (!sources.value.length) return 'BBC · NPR · Guardian';
+        return sources.value.join(' · ');
+      });
+
       onMounted(() => {
-        load();
-        refreshTimer = setInterval(load, 3 * 60 * 1000);
+        load(false);
+        refreshTimer = setInterval(() => load(false), 3 * 60 * 1000);
       });
 
       onBeforeUnmount(() => {
         if (refreshTimer) clearInterval(refreshTimer);
       });
 
-      return { items, loading, error, fetchedAt, load, formatTime };
+      return {
+        items,
+        loading,
+        error,
+        fetchedAt,
+        sources,
+        sourceLabel,
+        load,
+        formatTime,
+        refresh() {
+          load(true);
+        },
+      };
     },
     template: `
       <section class="live-feed-card">
         <div class="live-feed-head">
           <h2><i class="fa-solid fa-satellite-dish"></i> Live from the web</h2>
-          <button type="button" class="btn btn-ghost btn-sm" @click="load" :disabled="loading">
+          <button type="button" class="btn btn-ghost btn-sm" @click="refresh" :disabled="loading">
             <i class="fa-solid fa-arrows-rotate" :class="{ 'fa-spin': loading }"></i> Refresh
           </button>
         </div>
-        <p class="live-feed-sub" v-if="fetchedAt">Updated {{ formatTime(fetchedAt) }} · BBC · NPR · Guardian</p>
+        <p class="live-feed-sub" v-if="fetchedAt">Updated {{ formatTime(fetchedAt) }} · {{ sourceLabel }}</p>
         <p v-if="loading && !items.length" class="live-feed-status">Fetching realtime headlines...</p>
-        <p v-if="error" class="live-feed-status error">{{ error }}</p>
+        <p v-if="error && !items.length" class="live-feed-status error">{{ error }}</p>
         <ul class="live-feed-list" v-if="items.length">
           <li v-for="(item, idx) in items" :key="idx">
             <a :href="item.link" target="_blank" rel="noopener">
@@ -233,13 +257,15 @@
   };
 
   function mountSearch(el) {
-    if (!el) return;
+    if (!el || el.__vue_mounted) return;
+    el.__vue_mounted = true;
     const initial = el.getAttribute('data-initial') || '';
     createApp(SearchAutocomplete, { initialQuery: initial }).mount(el);
   }
 
   function mountLive(el) {
-    if (!el) return;
+    if (!el || el.__vue_mounted) return;
+    el.__vue_mounted = true;
     const limit = parseInt(el.getAttribute('data-limit') || '8', 10);
     createApp(LiveNewsFeed, { limit }).mount(el);
   }

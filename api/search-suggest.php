@@ -10,7 +10,8 @@ $q = isset($_GET['q']) ? trim((string) $_GET['q']) : '';
 $includeLive = !isset($_GET['live']) || $_GET['live'] !== '0';
 $limit = isset($_GET['limit']) ? max(1, min(15, (int) $_GET['limit'])) : 8;
 
-if (mb_strlen($q) < 1) {
+$qLen = function_exists('mb_strlen') ? mb_strlen($q) : strlen($q);
+if ($qLen < 1) {
     echo json_encode(['ok' => true, 'query' => $q, 'suggestions' => []]);
     exit;
 }
