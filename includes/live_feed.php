@@ -1,8 +1,7 @@
 <?php
 
 /**
- * Fetch and normalize public RSS/Atom headlines for the live news APIs.
- * Uses a short file cache so autocomplete stays fast while data stays near-realtime.
+ * Crypto & Forex news RSS/Atom feeds with short file cache.
  */
 
 function news_feed_cache_dir()
@@ -22,7 +21,7 @@ function news_fetch_feed_xml($url)
             'timeout' => 6,
             'follow_location' => 1,
             'max_redirects' => 3,
-            'header' => "User-Agent: Mozilla/5.0 (compatible; NewsSiteBot/1.1; +localhost)\r\nAccept: application/rss+xml, application/atom+xml, application/xml, text/xml, */*\r\n",
+            'header' => "User-Agent: Mozilla/5.0 (compatible; PulseMarketsBot/1.1; +localhost)\r\nAccept: application/rss+xml, application/atom+xml, application/xml, text/xml, */*\r\n",
         ],
         'ssl' => [
             'verify_peer' => true,
@@ -47,34 +46,27 @@ function news_feed_entries($xml)
     }
 
     $entries = [];
-
-    // RSS 2.0
     if (isset($xml->channel->item)) {
         foreach ($xml->channel->item as $item) {
             $entries[] = $item;
         }
         return $entries;
     }
-
-    // Atom
     if (isset($xml->entry)) {
         foreach ($xml->entry as $entry) {
             $entries[] = $entry;
         }
     }
-
     return $entries;
 }
 
 function news_entry_link($entry)
 {
     if (isset($entry->link)) {
-        // RSS: <link>url</link>
         $text = trim((string) $entry->link);
         if ($text !== '') {
             return $text;
         }
-        // Atom: <link href="..."/>
         foreach ($entry->link as $link) {
             $attrs = $link->attributes();
             if (isset($attrs['href'])) {
@@ -154,7 +146,6 @@ function news_parse_feed_items($source, $url)
         if ($title === '' || $link === '') {
             continue;
         }
-
         $desc = news_entry_summary($entry);
         $items[] = [
             'title' => $title,
@@ -172,38 +163,37 @@ function news_parse_feed_items($source, $url)
 
 function news_live_sources()
 {
-    // Primary outlets first. `fallback` sources only run if fewer than 3 primaries succeed.
     return [
         [
-            'source' => 'BBC News',
+            'source' => 'CoinTelegraph',
             'fallback' => false,
             'urls' => [
-                'https://feeds.bbci.co.uk/news/rss.xml',
-                'https://feeds.bbci.co.uk/news/world/rss.xml',
+                'https://cointelegraph.com/rss',
+                'https://cointelegraph.com/rss/tag/bitcoin',
             ],
         ],
         [
-            'source' => 'NPR',
+            'source' => 'CoinDesk',
             'fallback' => false,
             'urls' => [
-                'https://feeds.npr.org/1001/rss.xml',
-                'https://www.npr.org/rss/rss.php?id=1001',
-                'https://feeds.npr.org/1004/rss.xml',
+                'https://www.coindesk.com/arc/outboundfeeds/rss/',
+                'https://www.coindesk.com/arc/outboundfeeds/rss/?outputType=xml',
             ],
         ],
         [
-            'source' => 'The Guardian',
+            'source' => 'ForexLive',
             'fallback' => false,
             'urls' => [
-                'https://www.theguardian.com/world/rss',
-                'https://www.theguardian.com/uk/rss',
+                'https://www.forexlive.com/feed/news',
+                'https://www.forexlive.com/feed/',
             ],
         ],
         [
-            'source' => 'NYTimes',
+            'source' => 'Bitcoin Magazine',
             'fallback' => true,
             'urls' => [
-                'https://rss.nytimes.com/services/xml/rss/nyt/World.xml',
+                'https://bitcoinmagazine.com/.rss/full/',
+                'https://bitcoinmagazine.com/feed',
             ],
         ],
     ];
@@ -243,7 +233,6 @@ function news_fetch_all_live_items()
         return strcmp($b['published'], $a['published']);
     });
 
-    // De-dupe by link
     $seen = [];
     $unique = [];
     foreach ($items as $item) {
@@ -265,7 +254,7 @@ function news_fetch_all_live_items()
 function news_live_bundle($forceRefresh = false)
 {
     $cacheFile = news_feed_cache_dir() . '/live-news.json';
-    $ttl = 90; // seconds — near-realtime, fast for autocomplete
+    $ttl = 90;
 
     if (!$forceRefresh && is_file($cacheFile)) {
         $age = time() - filemtime($cacheFile);
@@ -284,7 +273,6 @@ function news_live_bundle($forceRefresh = false)
     if (!empty($bundle['items'])) {
         @file_put_contents($cacheFile, json_encode($bundle, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES), LOCK_EX);
     } elseif (is_file($cacheFile)) {
-        // Keep last good cache if fresh fetch failed entirely.
         $cached = json_decode((string) file_get_contents($cacheFile), true);
         if (is_array($cached) && !empty($cached['items'])) {
             $cached['from_cache'] = true;

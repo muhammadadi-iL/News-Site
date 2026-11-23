@@ -1,15 +1,21 @@
 <div id="sidebar" class="col-xs-12 col-sm-12 col-md-4">
     <div class="side-card search-box-container">
-        <h4>Search the archive</h4>
+        <h4>Search the desk</h4>
         <div
             data-vue-search
             data-initial="<?php echo isset($_GET['search']) ? e($_GET['search']) : ''; ?>"
         ></div>
-        <p class="help-text">Autocomplete mixes local posts + live web headlines (Vue.js).</p>
+        <p class="help-text">Autocomplete mixes local briefs + live crypto/forex headlines.</p>
+    </div>
+
+    <div class="side-card side-markets">
+        <h4>Quick markets</h4>
+        <a class="btn btn-accent btn-block" href="markets.php"><i class="fa-solid fa-chart-area"></i> Open live boards</a>
+        <p class="help-text">BTC, ETH, majors + EUR/USD, USD/JPY, GBP/USD and more.</p>
     </div>
 
     <div class="side-card recent-post-container">
-        <h4>Recent Posts</h4>
+        <h4>Recent briefs</h4>
         <?php
         include "config.php";
         $limit = 4;

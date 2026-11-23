@@ -1,18 +1,21 @@
-/* News Site — editorial theme */
+/* Pulse Markets — crypto & forex desk */
 :root {
-  --ink: #12141a;
-  --muted: #5c6472;
-  --line: #e4e7ee;
-  --page: #f3f5f8;
+  --ink: #102a2a;
+  --muted: #5b6e6c;
+  --line: #d7e3e0;
+  --page: #eef6f3;
   --surface: #ffffff;
-  --brand: #111827;
-  --accent: #d90429;
-  --accent-dark: #b00321;
-  --nav: #0f172a;
-  --shadow: 0 12px 30px rgba(17, 24, 39, 0.08);
+  --brand: #0f3d3a;
+  --accent: #0d9488;
+  --accent-dark: #0f766e;
+  --nav: #0b2f2c;
+  --up: #059669;
+  --down: #dc2626;
+  --gold: #d97706;
+  --shadow: 0 14px 34px rgba(15, 61, 58, 0.10);
   --radius: 14px;
-  --font-display: "Fraunces", Georgia, serif;
-  --font-body: "Manrope", "Segoe UI", sans-serif;
+  --font-display: "Sora", "Segoe UI", sans-serif;
+  --font-body: "IBM Plex Sans", "Segoe UI", sans-serif;
 }
 
 *,
@@ -28,8 +31,9 @@ body {
   margin: 0;
   color: var(--ink);
   background:
-    radial-gradient(circle at top right, rgba(217, 4, 41, 0.06), transparent 28%),
-    linear-gradient(180deg, #fafbfc 0%, var(--page) 40%);
+    radial-gradient(circle at top right, rgba(13, 148, 136, 0.12), transparent 32%),
+    radial-gradient(circle at 12% 18%, rgba(217, 119, 6, 0.08), transparent 26%),
+    linear-gradient(180deg, #f7fbfa 0%, var(--page) 42%);
   font-family: var(--font-body);
   overflow-x: hidden;
 }
@@ -1015,6 +1019,170 @@ img.logo { width: 100%; height: auto; display: block; }
   .action-btn { min-height: 44px; }
 }
 
+/* Live market ticker */
+.ticker-mount { display: block; }
+
+.market-ticker {
+  display: flex;
+  align-items: stretch;
+  background: #062220;
+  color: #ecfdf5;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+  min-height: 40px;
+}
+
+.ticker-label {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 14px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.ticker-track {
+  flex: 1;
+  overflow: hidden;
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+
+.ticker-seq {
+  display: inline-flex;
+  gap: 28px;
+  white-space: nowrap;
+  padding: 10px 18px;
+  animation: ticker-move 38s linear infinite;
+}
+
+.ticker-seq.is-loading { animation: none; }
+
+.ticker-item {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.ticker-item strong { font-weight: 700; color: #fff; }
+.ticker-item em { font-style: normal; color: #a7f3d0; font-variant-numeric: tabular-nums; }
+.ticker-item b { font-weight: 700; font-variant-numeric: tabular-nums; }
+.ticker-item .up { color: #34d399; }
+.ticker-item .down { color: #fca5a5; }
+
+@keyframes ticker-move {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+.markets-split {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin: 0 0 22px;
+}
+
+.markets-split-lg { margin-top: 8px; }
+
+.market-board {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 18px;
+  box-shadow: var(--shadow);
+}
+
+.board-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+.board-head h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 20px;
+}
+
+.board-sub {
+  margin: 0 0 12px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.board-status { margin: 0; color: var(--muted); }
+.board-status.error { color: var(--down); }
+
+.board-table { display: grid; gap: 6px; }
+
+.board-row {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr 0.7fr;
+  gap: 10px;
+  align-items: center;
+  padding: 10px 8px;
+  border-radius: 10px;
+}
+
+.board-row.head {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  font-weight: 700;
+  padding-bottom: 2px;
+}
+
+.board-row:not(.head):hover { background: #f0faf7; }
+
+.board-row .asset {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.board-row .asset img {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+}
+
+.board-row .asset strong { font-weight: 800; }
+.board-row .asset small {
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.board-row .price {
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}
+
+.board-row .chg {
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  text-align: right;
+}
+
+.board-row .chg.up { color: var(--up); }
+.board-row .chg.down { color: var(--down); }
+.board-row .chg.muted { color: var(--muted); font-weight: 600; }
+
+.markets-page { padding: 28px 15px 40px; }
+.markets-page-head { margin-bottom: 18px; }
+
+.side-markets .btn-block { width: 100%; margin-bottom: 8px; }
+
 /* Vue autocomplete + live feed */
 .vue-search { width: 100%; position: relative; }
 
@@ -1060,7 +1228,7 @@ img.logo { width: 100%; height: auto; display: block; }
 
 .vue-suggest-list li:hover,
 .vue-suggest-list li.active {
-  background: #fff1f3;
+  background: #e6f7f4;
 }
 
 .suggest-label {
@@ -1092,7 +1260,7 @@ img.logo { width: 100%; height: auto; display: block; }
 }
 
 .suggest-badge.live {
-  background: #ffe5ea;
+  background: #ccfbf1;
   color: var(--accent-dark);
 }
 
@@ -1124,7 +1292,7 @@ img.logo { width: 100%; height: auto; display: block; }
 }
 
 .live-feed-card {
-  background: #0f172a;
+  background: linear-gradient(160deg, #0b2f2c 0%, #062220 55%, #0f3d3a 100%);
   color: #fff;
   border-radius: 16px;
   padding: 22px;
@@ -1194,7 +1362,7 @@ img.logo { width: 100%; height: auto; display: block; }
   font-weight: 800;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: #ffd4db;
+  color: #fde68a;
 }
 
 .live-feed-list strong {
@@ -1215,6 +1383,7 @@ img.logo { width: 100%; height: auto; display: block; }
 
 @media (max-width: 991px) {
   .live-feed-list { grid-template-columns: 1fr; }
+  .markets-split { grid-template-columns: 1fr; }
   .header-vue-search { min-width: 0; width: 100%; }
   .header-search-slot { width: 100%; flex-wrap: wrap; }
 }

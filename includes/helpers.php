@@ -35,6 +35,14 @@ function category_icon($name)
 {
     $key = strtolower(trim((string) $name));
     $map = [
+        'crypto' => 'fa-coins',
+        'bitcoin' => 'fa-coins',
+        'ethereum' => 'fa-gem',
+        'forex' => 'fa-chart-line',
+        'analysis' => 'fa-chart-pie',
+        'macro' => 'fa-globe',
+        'defi' => 'fa-link',
+        'markets' => 'fa-chart-area',
         'politics' => 'fa-landmark',
         'sports' => 'fa-futbol',
         'business' => 'fa-chart-line',
@@ -45,6 +53,15 @@ function category_icon($name)
         'world' => 'fa-earth-americas',
     ];
     return $map[$key] ?? 'fa-bookmark';
+}
+
+function site_brand()
+{
+    return [
+        'name' => 'Pulse Markets',
+        'short' => 'PULSE',
+        'tagline' => 'Crypto & Forex news with live market data',
+    ];
 }
 
 function require_admin_session($hostname)

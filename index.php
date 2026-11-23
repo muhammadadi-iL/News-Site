@@ -32,14 +32,19 @@
             <?php } ?>
 
         <div class="container">
+            <div class="markets-split">
+                <div data-vue-crypto data-limit="6"></div>
+                <div data-vue-forex data-limit="6"></div>
+            </div>
+
             <div class="live-feed-wrap" data-vue-live data-limit="8"></div>
 
             <div class="row content-grid">
                 <div class="col-xs-12 col-sm-12 col-md-8">
                     <div class="post-container">
                         <div class="section-head">
-                            <h2 class="page-heading">Latest News</h2>
-                            <p class="section-sub">Fresh reporting across politics, sports, business and tech.</p>
+                            <h2 class="page-heading">Desk briefings</h2>
+                            <p class="section-sub">Editorial coverage across crypto, forex, bitcoin, ethereum, and analysis.</p>
                         </div>
                         <?php
                         $limit = 3;

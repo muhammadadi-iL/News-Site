@@ -10,7 +10,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <title>Admin Panel | News Site</title>
+        <title>Admin Panel | Pulse Markets</title>
         <link rel="icon" href="../images/favicon.ico" sizes="any">
         <link rel="icon" href="../images/favicon-32.png" type="image/png" sizes="32x32">
         <link rel="icon" href="../images/logo.png" type="image/png" sizes="256x256">
@@ -28,8 +28,8 @@
                 <div class="row admin-header-row">
                     <div class="col-xs-12 col-sm-6">
                         <a class="admin-brand" href="post.php">
-                            <img class="logo" src="../images/logo.png" alt="News Site">
-                            <span>News Site <small>Admin</small></span>
+                            <img class="logo" src="../images/logo.svg" alt="Pulse Markets">
+                            <span>Pulse Markets <small>Admin</small></span>
                         </a>
                     </div>
                     <div class="col-xs-12 col-sm-6 text-right-sm">

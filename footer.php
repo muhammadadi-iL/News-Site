@@ -1,16 +1,18 @@
+<?php $brand = function_exists('site_brand') ? site_brand() : ['name' => 'Pulse Markets', 'tagline' => '']; ?>
 <footer id="footer">
     <div class="container">
         <div class="footer-grid">
             <div class="footer-brand">
-                <img src="images/logo.png" alt="News Site">
+                <img src="images/logo.svg" alt="<?php echo e($brand['name']); ?>">
                 <div>
-                    <strong>NEWS SITE</strong>
-                    <p>Clear headlines, verified context, and stories that travel well from phone to desktop.</p>
+                    <strong><?php echo e(strtoupper($brand['name'])); ?></strong>
+                    <p><?php echo e($brand['tagline']); ?>. Editorial CMS for posts, categories, and users — plus live market APIs.</p>
                 </div>
             </div>
             <div class="footer-col">
                 <h4>Explore</h4>
                 <a href="<?php echo $hostname; ?>">Home</a>
+                <a href="markets.php">Live Markets</a>
                 <a href="search.php">Search</a>
                 <a href="admin/">Admin</a>
             </div>
@@ -21,7 +23,7 @@
             </div>
         </div>
         <div class="footer-bottom">
-            <span><i class="fa-regular fa-copyright"></i> <?php echo date('Y'); ?> News Site</span>
+            <span><i class="fa-regular fa-copyright"></i> <?php echo date('Y'); ?> <?php echo e($brand['name']); ?></span>
             <span>Built by <a href="https://github.com/muhammadadi-iL" target="_blank" rel="noopener">Muhammad Adil</a></span>
         </div>
     </div>
