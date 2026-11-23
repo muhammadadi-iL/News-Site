@@ -1,6 +1,6 @@
 <?php include 'header.php'; ?>
     <div id="main-content">
-      <div class="container">
+      <div class="container page-shell">
         <div class="row content-grid">
             <div class="col-xs-12 col-sm-12 col-md-8">
                 <div class="post-container">
@@ -11,7 +11,11 @@
                     $result1 = mysqli_query($conn, $sql1) or die('Query Failed.');
                     $row1 = mysqli_fetch_assoc($result1);
                 ?>
-                  <div class="section-head"><h2 class="page-heading"><i class="fa-solid <?php echo $row1 ? category_icon($row1['category_name']) : 'fa-bookmark'; ?>"></i> <?php echo $row1 ? e($row1['category_name']) : 'Category'; ?></h2></div>
+                  <div class="section-head">
+                    <p class="page-eyebrow"><i class="fa-solid fa-folder-open"></i> Desk category</p>
+                    <h2 class="page-heading"><i class="fa-solid <?php echo $row1 ? category_icon($row1['category_name']) : 'fa-bookmark'; ?>"></i> <?php echo $row1 ? e($row1['category_name']) : 'Category'; ?></h2>
+                    <p class="section-sub">Editorial briefs filed under this market desk.</p>
+                  </div>
                   <?php
                         $limit = 5;
                         $page = isset($_GET['page']) ? max(1, (int) $_GET['page']) : 1;

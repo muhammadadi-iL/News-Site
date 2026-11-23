@@ -150,7 +150,7 @@ function news_parse_feed_items($source, $url)
         $items[] = [
             'title' => $title,
             'link' => $link,
-            'summary' => function_exists('mb_substr') ? mb_substr($desc, 0, 180) : substr($desc, 0, 180),
+            'summary' => function_exists('mb_substr') ? mb_substr($desc, 0, 420) : substr($desc, 0, 420),
             'source' => $source,
             'published' => news_entry_published($entry),
             'image' => news_entry_image($entry),

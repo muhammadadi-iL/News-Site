@@ -31,18 +31,38 @@
             </section>
             <?php } ?>
 
-        <div class="container">
-            <div class="markets-split">
-                <div data-vue-crypto data-limit="6"></div>
-                <div data-vue-forex data-limit="6"></div>
-            </div>
+        <div class="container desk-stack">
+            <section class="desk-block">
+                <div class="section-head section-head-row">
+                    <div>
+                        <h2 class="page-heading">Market snapshot</h2>
+                        <p class="section-sub">Live crypto and forex quotes, refreshed every minute.</p>
+                    </div>
+                    <a class="btn btn-soft btn-sm" href="markets.php"><i class="fa-solid fa-chart-area"></i> Full markets</a>
+                </div>
+                <div class="markets-split">
+                    <div data-vue-crypto data-limit="6"></div>
+                    <div data-vue-forex data-limit="6"></div>
+                </div>
+            </section>
 
-            <div class="markets-split charts-split">
-                <div data-vue-crypto-chart></div>
-                <div data-vue-forex-chart></div>
-            </div>
+            <section class="desk-block">
+                <div class="live-feed-wrap" data-vue-live data-limit="9" data-layout="desk"></div>
+            </section>
 
-            <div class="live-feed-wrap" data-vue-live data-limit="8"></div>
+            <section class="desk-block">
+                <div class="section-head section-head-row">
+                    <div>
+                        <h2 class="page-heading">Charts</h2>
+                        <p class="section-sub">Historical ranges for major crypto assets and FX pairs.</p>
+                    </div>
+                    <a class="btn btn-soft btn-sm" href="markets.php"><i class="fa-solid fa-chart-line"></i> Expand charts</a>
+                </div>
+                <div class="markets-split charts-split">
+                    <div data-vue-crypto-chart></div>
+                    <div data-vue-forex-chart></div>
+                </div>
+            </section>
 
             <div class="row content-grid">
                 <div class="col-xs-12 col-sm-12 col-md-8">
@@ -80,7 +100,7 @@
                                         <span><i class="fa-regular fa-calendar-days"></i> <?php echo e($row['post_date']); ?></span>
                                     </div>
                                     <p class="description">
-                                        <?php echo e(substr($row['post_keywords'], 0, 130)) . "..."; ?>
+                                        <?php echo e(substr($row['post_keywords'], 0, 160)) . "..."; ?>
                                     </p>
                                     <a class="btn btn-accent btn-sm" href="single.php?id=<?php echo (int) $row['id']; ?>">
                                         Continue reading <i class="fa-solid fa-arrow-right"></i>

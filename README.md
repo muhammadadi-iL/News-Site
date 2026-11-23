@@ -22,7 +22,7 @@ PHP + MySQL news CMS focused on **cryptocurrency & forex**, with **realtime pric
 - **Live forex board** — Frankfurter G10-style pairs (EUR/USD, GBP/USD, USD/JPY, …)
 - **Interactive charts** — Chart.js line charts (crypto 1D–90D, forex 7D–90D) on Home + Markets
 - **Scrolling ticker** — prices across the top of every page
-- **Live market news** — CoinTelegraph, CoinDesk, ForexLive RSS
+- **Live market stories** — featured wire + story rail + detail panel (`stories.php`)
 - **Vue autocomplete search** — local posts + live headlines
 - **Admin CRUD** — create/edit/delete posts, categories, users + image upload
 

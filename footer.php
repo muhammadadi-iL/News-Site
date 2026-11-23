@@ -13,6 +13,7 @@
                 <h4>Explore</h4>
                 <a href="<?php echo $hostname; ?>">Home</a>
                 <a href="markets.php">Live Markets</a>
+                <a href="stories.php">Live Stories</a>
                 <a href="search.php">Search</a>
                 <a href="admin/">Admin</a>
             </div>

@@ -1,6 +1,6 @@
 <?php include 'header.php'; ?>
     <div id="main-content">
-      <div class="container">
+      <div class="container page-shell">
         <div class="row content-grid">
             <div class="col-xs-12 col-sm-12 col-md-8">
                 <div class="post-container">
@@ -8,7 +8,11 @@
                     include "config.php";
                     $id = isset($_GET['search']) ? mysqli_real_escape_string($conn, trim($_GET['search'])) : '';
                     ?>
-                  <div class="section-head"><h2 class="page-heading"><i class="fa-solid fa-magnifying-glass"></i> Search : <?php echo e($id); ?></h2></div>
+                  <div class="section-head">
+                    <p class="page-eyebrow"><i class="fa-solid fa-magnifying-glass"></i> Desk search</p>
+                    <h2 class="page-heading">Results<?php echo $id !== '' ? ': ' . e($id) : ''; ?></h2>
+                    <p class="section-sub">Matches local briefings by title and body. Use header autocomplete for live wires too.</p>
+                  </div>
                   <?php
                         $limit = 5;
                         $page = isset($_GET['page']) ? max(1, (int) $_GET['page']) : 1;

@@ -42,6 +42,9 @@ switch ($page) {
     case "markets.php":
         $page_title = "Live Markets — Crypto & Forex";
         break;
+    case "stories.php":
+        $page_title = "Live Market Stories";
+        break;
     default:
         $page_title = $brand['name'] . " — Crypto & Forex News";
         break;
@@ -122,6 +125,11 @@ $break_row = $breaking ? mysqli_fetch_assoc($breaking) : null;
                 <li>
                     <a class="<?php echo ($page === 'markets.php') ? 'active' : ''; ?>" href="markets.php">
                         <i class="fa-solid fa-chart-area"></i> Live Markets
+                    </a>
+                </li>
+                <li>
+                    <a class="<?php echo ($page === 'stories.php') ? 'active' : ''; ?>" href="stories.php">
+                        <i class="fa-solid fa-newspaper"></i> Stories
                     </a>
                 </li>
                 <?php

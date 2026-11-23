@@ -586,14 +586,29 @@
     `,
   };
 
+  function timeAgo(iso) {
+    if (!iso) return '';
+    const t = new Date(iso).getTime();
+    if (Number.isNaN(t)) return '';
+    const sec = Math.max(0, Math.floor((Date.now() - t) / 1000));
+    if (sec < 60) return 'just now';
+    if (sec < 3600) return Math.floor(sec / 60) + 'm ago';
+    if (sec < 86400) return Math.floor(sec / 3600) + 'h ago';
+    return Math.floor(sec / 86400) + 'd ago';
+  }
+
   const LiveNewsFeed = {
-    props: { limit: { type: Number, default: 8 } },
+    props: {
+      limit: { type: Number, default: 8 },
+      layout: { type: String, default: 'desk' },
+    },
     setup(props) {
       const items = ref([]);
       const loading = ref(true);
       const error = ref('');
       const fetchedAt = ref('');
       const sources = ref([]);
+      const active = ref(null);
       let refreshTimer = null;
 
       async function load(force) {
@@ -608,15 +623,23 @@
           items.value = data.items || [];
           fetchedAt.value = data.fetched_at || '';
           sources.value = Array.isArray(data.sources) ? data.sources : [];
-          if (!items.value.length) error.value = 'No live market headlines right now.';
+          if (!items.value.length) error.value = 'No live market stories right now.';
+          if (active.value) {
+            const still = items.value.find((i) => i.link === active.value.link);
+            active.value = still || items.value[0] || null;
+          } else if (items.value.length) {
+            active.value = items.value[0];
+          }
         } catch (_) {
-          if (!items.value.length) error.value = 'Could not load live headlines right now.';
+          if (!items.value.length) error.value = 'Could not load live stories right now.';
         } finally {
           loading.value = false;
         }
       }
 
       const sourceLabel = computed(() => sources.value.length ? sources.value.join(' · ') : 'Crypto · Forex wires');
+      const featured = computed(() => items.value[0] || null);
+      const rest = computed(() => items.value.slice(1));
 
       onMounted(() => {
         load(false);
@@ -625,8 +648,10 @@
       onBeforeUnmount(() => { if (refreshTimer) clearInterval(refreshTimer); });
 
       return {
-        items, loading, error, fetchedAt, sourceLabel,
+        items, loading, error, fetchedAt, sourceLabel, featured, rest, active, timeAgo,
+        layout: props.layout,
         refresh() { load(true); },
+        openDetail(item) { active.value = item; },
         formatTime(iso) {
           if (!iso) return '';
           try { return new Date(iso).toLocaleString(); } catch (_) { return iso; }
@@ -634,25 +659,82 @@
       };
     },
     template: `
-      <section class="live-feed-card">
-        <div class="live-feed-head">
-          <h2><i class="fa-solid fa-satellite-dish"></i> Live market news</h2>
-          <button type="button" class="btn btn-ghost btn-sm" @click="refresh" :disabled="loading">
-            <i class="fa-solid fa-arrows-rotate" :class="{ 'fa-spin': loading }"></i> Refresh
-          </button>
+      <section class="live-stories" :class="'layout-' + layout">
+        <div class="live-stories-head">
+          <div>
+            <h2><i class="fa-solid fa-satellite-dish"></i> Live market stories</h2>
+            <p class="live-feed-sub" v-if="fetchedAt">Realtime wires · Updated {{ formatTime(fetchedAt) }} · {{ sourceLabel }}</p>
+          </div>
+          <div class="live-stories-actions">
+            <a class="btn btn-soft btn-sm" href="stories.php"><i class="fa-solid fa-newspaper"></i> All stories</a>
+            <button type="button" class="btn btn-ghost btn-sm" @click="refresh" :disabled="loading">
+              <i class="fa-solid fa-arrows-rotate" :class="{ 'fa-spin': loading }"></i> Refresh
+            </button>
+          </div>
         </div>
-        <p class="live-feed-sub" v-if="fetchedAt">Updated {{ formatTime(fetchedAt) }} · {{ sourceLabel }}</p>
-        <p v-if="loading && !items.length" class="live-feed-status">Fetching realtime headlines…</p>
+
+        <p v-if="loading && !items.length" class="live-feed-status">Fetching realtime stories…</p>
         <p v-if="error && !items.length" class="live-feed-status error">{{ error }}</p>
-        <ul class="live-feed-list" v-if="items.length">
-          <li v-for="(item, idx) in items" :key="idx">
-            <a :href="item.link" target="_blank" rel="noopener">
-              <span class="live-source">{{ item.source }}</span>
-              <strong>{{ item.title }}</strong>
-              <em v-if="item.summary">{{ item.summary }}</em>
+
+        <div class="live-stories-grid" v-if="items.length">
+          <article class="story-feature" v-if="featured" @click="openDetail(featured)">
+            <div class="story-feature-media" v-if="featured.image">
+              <img :src="featured.image" :alt="featured.title" loading="lazy" />
+            </div>
+            <div class="story-feature-body">
+              <div class="story-meta-row">
+                <span class="live-source">{{ featured.source }}</span>
+                <span class="story-time">{{ timeAgo(featured.published) }}</span>
+              </div>
+              <h3>{{ featured.title }}</h3>
+              <p v-if="featured.summary">{{ featured.summary }}</p>
+              <div class="story-feature-cta">
+                <button type="button" class="btn btn-accent btn-sm" @click.stop="openDetail(featured)">Read details</button>
+                <a class="btn btn-soft btn-sm" :href="featured.link" target="_blank" rel="noopener" @click.stop>
+                  Open source <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                </a>
+              </div>
+            </div>
+          </article>
+
+          <div class="story-rail">
+            <article
+              class="story-card"
+              v-for="(item, idx) in rest"
+              :key="idx"
+              :class="{ active: active && active.link === item.link, 'no-thumb': !item.image }"
+              @click="openDetail(item)"
+            >
+              <div class="story-card-thumb" v-if="item.image">
+                <img :src="item.image" :alt="item.title" loading="lazy" />
+              </div>
+              <div class="story-card-body">
+                <div class="story-meta-row">
+                  <span class="live-source">{{ item.source }}</span>
+                  <span class="story-time">{{ timeAgo(item.published) }}</span>
+                </div>
+                <h4>{{ item.title }}</h4>
+                <p v-if="item.summary">{{ item.summary }}</p>
+              </div>
+            </article>
+          </div>
+
+          <aside class="story-detail" v-if="active">
+            <p class="story-detail-kicker"><i class="fa-solid fa-book-open"></i> Story details</p>
+            <div class="story-meta-row">
+              <span class="live-source">{{ active.source }}</span>
+              <span class="story-time">{{ timeAgo(active.published) }} · {{ formatTime(active.published) }}</span>
+            </div>
+            <h3>{{ active.title }}</h3>
+            <div class="story-detail-media" v-if="active.image">
+              <img :src="active.image" :alt="active.title" />
+            </div>
+            <p class="story-detail-copy">{{ active.summary || 'Full wire available on the source site.' }}</p>
+            <a class="btn btn-accent" :href="active.link" target="_blank" rel="noopener">
+              Continue on {{ active.source }} <i class="fa-solid fa-arrow-up-right-from-square"></i>
             </a>
-          </li>
-        </ul>
+          </aside>
+        </div>
       </section>
     `,
   };
@@ -671,7 +753,10 @@
     });
     document.querySelectorAll('[data-vue-live]').forEach((el) => {
       mountOnce(el, (node) => {
-        createApp(LiveNewsFeed, { limit: parseInt(node.getAttribute('data-limit') || '8', 10) }).mount(node);
+        createApp(LiveNewsFeed, {
+          limit: parseInt(node.getAttribute('data-limit') || '8', 10),
+          layout: node.getAttribute('data-layout') || 'desk',
+        }).mount(node);
       });
     });
     document.querySelectorAll('[data-vue-ticker]').forEach((el) => {
