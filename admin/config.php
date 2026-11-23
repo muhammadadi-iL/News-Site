@@ -21,3 +21,5 @@ if (!$conn) {
 }
 
 mysqli_set_charset($conn, "utf8mb4");
+
+require_once dirname(__DIR__) . '/includes/helpers.php';

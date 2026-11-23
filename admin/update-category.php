@@ -1,84 +1,54 @@
-<?php include "header.php"; ?>
-<?php include "config.php"; ?>
+<?php
+include "header.php";
+include "config.php";
+require_admin_role($hostname);
 
-<?php 
-
-if($_SESSION["role"] == '0' ){
-    header("Location: {$hostname}/admin/post.php");
+$error = '';
+if (isset($_POST['submit'])) {
+    $id = (int) ($_POST['id'] ?? 0);
+    $category_name = mysqli_real_escape_string($conn, trim($_POST['category_name'] ?? ''));
+    if ($id < 1 || $category_name === '') {
+        $error = 'Invalid category data.';
+    } else {
+        $sql = "UPDATE category SET category_name = '{$category_name}' WHERE id = {$id}";
+        if (mysqli_query($conn, $sql)) {
+            header("Location: {$hostname}/admin/category.php");
+            exit;
+        }
+        $error = 'Update failed.';
+    }
 }
 
-if(isset($_POST['submit'])){
-
-$id = mysqli_real_escape_string($conn,$_POST['id']);
-$category_name = mysqli_real_escape_string($conn,$_POST['category_name']);
-
-$sql = "UPDATE category SET category_name = '{$category_name}', WHERE id = '{$id}'";
- 
-if(mysqli_query($conn,$sql)){
-    header ("Location: {$hostname}/admin/category.php");
+$id = isset($_GET['id']) ? (int) $_GET['id'] : (int) ($_POST['id'] ?? 0);
+$result = mysqli_query($conn, "SELECT * FROM category WHERE id = {$id}") or die("query failed.");
+$row = mysqli_fetch_assoc($result);
+if (!$row) {
+    echo "<div class='container'><p class='empty-state'>Category not found.</p></div>";
+    include "footer.php";
+    exit;
 }
-}
-
 ?>
-
   <div id="admin-content">
       <div class="container">
           <div class="row">
               <div class="col-md-12">
-                  <h1 class="adin-heading"> Update Category</h1>
+                  <h1 class="admin-heading"><i class="fa-solid fa-pen-to-square"></i> Update Category</h1>
               </div>
               <div class="col-md-offset-3 col-md-6">
-
-              <?php
-              
-              include "config.php";
-                
-                $id = $_GET["id"];
-                $sql = "SELECT category.category_name FROM category WHERE category.id = {$id}";
-                // print_r("abr");
-                $result = mysqli_query($conn ,$sql) or die ("query failed.");
-                // print_r("abr");
-                // print_r($result);
-                // exit;
-                if(mysqli_num_rows($result) > 0){
-                while($row = mysqli_fetch_assoc($result)){
-              ?>
-
-                  <form action="<?php $_SERVER['PHP_SELF']; ?>" method ="POST">
-                  <div class="form-group">
-                <input type="hidden" name="id"  class="form-control" value="<?php echo  $row['id'] ?>" placeholder="">
-            </div>
+                  <?php if ($error) { echo "<div class='alert alert-danger'>" . e($error) . "</div>"; } ?>
+                  <form class="admin-form" action="<?php echo e($_SERVER['PHP_SELF']); ?>?id=<?php echo (int) $row['id']; ?>" method="POST">
+                      <input type="hidden" name="id" value="<?php echo (int) $row['id']; ?>">
                       <div class="form-group">
-                          <label>Category Name</label>
-                          <select name="category_name" class="form-control">
-                              <option disabled> Select Category</option>
-                              <?php
-                              include "config.php";
-                                $sql1 = "SELECT * FROM category";
-                                $result1 = mysqli_query($conn, $sql1) or die ("QUERY failed.");
-                            
-                                if(mysqli_num_rows($result1) > 0){
-                                    while($row1 = mysqli_fetch_assoc($result1)){
-                                        if($row['category_name'] == $row1['id']){
-                                            $selected = "selected";
-                                        }else{
-                                            $selected = "";
-                                        }
-                                        echo "<option {$selected} value='{$row1['id']}'>{$row1['category_name']}</option>";
-                                    }
-                                }
-                              ?>
-                          </select>
+                          <label><i class="fa-solid fa-tag"></i> Category Name</label>
+                          <input type="text" name="category_name" class="form-control" value="<?php echo e($row['category_name']); ?>" required>
                       </div>
-                      <input type="submit" name="submit" class="btn btn-primary" value="Update" required />
+                      <div class="form-actions">
+                          <a href="category.php" class="btn btn-default">Cancel</a>
+                          <button type="submit" name="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> Update</button>
+                      </div>
                   </form>
-                  <?php
-                  
-                }
-            } 
-                  ?>
-                </div>
               </div>
-            </div>
           </div>
+      </div>
+  </div>
 <?php include "footer.php"; ?>

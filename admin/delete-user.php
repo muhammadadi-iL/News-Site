@@ -1,19 +1,20 @@
-<?php 
-include "config.php"; 
+<?php
+include "config.php";
+require_admin_role($hostname);
 
-if($_SESSION["role"] == '0' ){
-    header("Location: {$hostname}/admin/post.php");
+$id = isset($_GET['id']) ? (int) $_GET['id'] : 0;
+if ($id < 1) {
+    header("Location: {$hostname}/admin/users.php");
+    exit;
 }
 
-$id = $_GET['id'];
-
-$sql = "DELETE FROM users WHERE id = {$id}";
-if(mysqli_query($conn,$sql)){
-    header ("Location: {$hostname}/admin/users.php");
+if ($id === (int) $_SESSION['id']) {
+    die("<div style='font-family:sans-serif;margin:2rem;'>You cannot delete your own account. <a href='users.php'>Back</a></div>");
 }
-else{
-    echo "<p style = 'color: red; margin: 10px 0;'>Can\'t Delete User Record</p>";
-}
-mysqli_close($conn);
 
-?>
+if (mysqli_query($conn, "DELETE FROM users WHERE id = {$id}")) {
+    header("Location: {$hostname}/admin/users.php");
+    exit;
+}
+
+echo "Can't delete user record";

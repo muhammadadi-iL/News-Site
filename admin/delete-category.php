@@ -1,19 +1,22 @@
-<?php 
-include "config.php"; 
+<?php
+include "config.php";
+require_admin_role($hostname);
 
-if($_SESSION["role"] == '0' ){
-    header("Location: {$hostname}/admin/post.php");
+$id = isset($_GET['id']) ? (int) $_GET['id'] : 0;
+if ($id < 1) {
+    header("Location: {$hostname}/admin/category.php");
+    exit;
 }
 
-$id = $_GET['id'];
-
-$sql = "DELETE FROM category WHERE id = {$id}";
-if(mysqli_query($conn,$sql)){
-    header ("Location: {$hostname}/admin/category.php");
+$check = mysqli_query($conn, "SELECT COUNT(*) AS c FROM posts WHERE post_content = {$id}");
+$count = (int) mysqli_fetch_assoc($check)['c'];
+if ($count > 0) {
+    die("<div style='font-family:sans-serif;margin:2rem;'>Cannot delete: {$count} post(s) still use this category. <a href='category.php'>Back</a></div>");
 }
-else{
-    echo "<p style = 'color: red; margin: 10px 0;'>Can\'t Delete category Record</p>";
-}
-mysqli_close($conn);
 
-?>
+if (mysqli_query($conn, "DELETE FROM category WHERE id = {$id}")) {
+    header("Location: {$hostname}/admin/category.php");
+    exit;
+}
+
+echo "Can't delete category record";

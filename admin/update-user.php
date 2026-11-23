@@ -1,98 +1,72 @@
-<?php include "header.php"; ?>
-<?php include "config.php"; ?>
-<?php 
+<?php
+include "header.php";
+include "config.php";
+require_admin_role($hostname);
 
-if($_SESSION["role"] == '0' ){
-    header("Location: {$hostname}/admin/post.php");
+$error = '';
+if (isset($_POST['submit'])) {
+    $id = (int) ($_POST['id'] ?? 0);
+    $first_name = mysqli_real_escape_string($conn, trim($_POST['first_name'] ?? ''));
+    $last_name = mysqli_real_escape_string($conn, trim($_POST['last_name'] ?? ''));
+    $username = mysqli_real_escape_string($conn, trim($_POST['username'] ?? ''));
+    $role = (int) ($_POST['role'] ?? 0);
+
+    $sql = "UPDATE users SET first_name = '{$first_name}', last_name = '{$last_name}', username = '{$username}', role = '{$role}' WHERE id = {$id}";
+    if (mysqli_query($conn, $sql)) {
+        header("Location: {$hostname}/admin/users.php");
+        exit;
+    }
+    $error = 'Update failed.';
 }
 
-if(isset($_POST['submit'])){
-
-$id = mysqli_real_escape_string($conn,$_POST['id']);
-$first_name = mysqli_real_escape_string($conn,$_POST['first_name']);
-$last_name = mysqli_real_escape_string($conn,$_POST['last_name']);
-$username = mysqli_real_escape_string($conn,$_POST['username']);
-$role = mysqli_real_escape_string($conn,$_POST['role']);
-
-$sql = "UPDATE users SET first_name = '{$first_name}', last_name = '{$last_name}', username = '{$username}', role = '{$role}' WHERE id = '{$id}'";
-//$result = mysqli_query($conn, $sql) or die ('Query Failed.');
-
-// if(mysqli_num_rows($result) > 0){
-//     echo "<p style= 'color: red; text-align: center;'>Username Already Exist.</p>";
-// }
-// else{
-//     $insertquery = "INSERT INTO users (`first_name`, `last_name`, `username`, `role`) VALUES ('$first_name', '$last_name', '$username', '$role')";
-
-//     mysqli_query($conn, $insertquery);
-// }
-if(mysqli_query($conn,$sql)){
-    header ("Location: {$hostname}/admin/users.php");
+$id = isset($_GET['id']) ? (int) $_GET['id'] : (int) ($_POST['id'] ?? 0);
+$result = mysqli_query($conn, "SELECT * FROM users WHERE id = {$id}") or die("query failed.");
+$row = mysqli_fetch_assoc($result);
+if (!$row) {
+    echo "<div class='container'><p class='empty-state'>User not found.</p></div>";
+    include "footer.php";
+    exit;
 }
-}
-
-?> 
+?>
   <div id="admin-content">
       <div class="container">
           <div class="row">
               <div class="col-md-12">
-                  <h1 class="admin-heading">Modify User Details</h1>
+                  <h1 class="admin-heading"><i class="fa-solid fa-user-pen"></i> Modify User Details</h1>
               </div>
-              <div class="col-md-offset-4 col-md-4">
-
-              <?php
-              
-              include "config.php";
-                
-                $id = $_GET["id"];
-                $sql = "SELECT * FROM users WHERE id = {$id}";
-                // print_r("abr");
-                $result = mysqli_query($conn ,$sql) or die ("query failed.");
-                // print_r("abr");
-                // print_r($result);
-                // exit;
-                if(mysqli_num_rows($result) > 0){
-                while($row = mysqli_fetch_assoc($result)){
-              ?>
-
-                  <!-- Form Start -->
-                  <form  action="<?php $_SERVER['PHP_SELF']; ?>" method ="POST">
+              <div class="col-md-offset-3 col-md-6">
+                  <?php if ($error) { echo "<div class='alert alert-danger'>" . e($error) . "</div>"; } ?>
+                  <form class="admin-form" action="<?php echo e($_SERVER['PHP_SELF']); ?>?id=<?php echo (int) $row['id']; ?>" method="POST">
+                      <input type="hidden" name="id" value="<?php echo (int) $row['id']; ?>">
                       <div class="form-group">
-                          <input type="hidden" name="id"  class="form-control" value="<?php echo $row['id']; ?>" placeholder="" >
-                      </div>
-                          <div class="form-group">
                           <label>First Name</label>
-                          <input type="text" name="first_name" class="form-control" value="<?php echo $row['first_name']; ?>" placeholder="" required>
+                          <input type="text" name="first_name" class="form-control" value="<?php echo e($row['first_name']); ?>" required>
                       </div>
                       <div class="form-group">
                           <label>Last Name</label>
-                          <input type="text" name="last_name" class="form-control" value="<?php echo $row['last_name']; ?>" placeholder="" required>
+                          <input type="text" name="last_name" class="form-control" value="<?php echo e($row['last_name']); ?>" required>
                       </div>
                       <div class="form-group">
-                          <label>User Name</label>
-                          <input type="text" name="username" class="form-control" value="<?php echo $row['username']; ?>" placeholder="" required>
+                          <label>Username</label>
+                          <input type="text" name="username" class="form-control" value="<?php echo e($row['username']); ?>" required>
                       </div>
                       <div class="form-group">
                           <label>User Role</label>
-                          <select class="form-control" name="role" value="<?php echo $row['role']; ?>">
-                          <?php
-                          if($row['role'] == 1){
-                            echo "<option value='0'>normal User</option>
-                                 <option value='1' selected>Admin</option>";
-                          }else{
-                            echo "<option value='0' selected>normal User</option>
-                                 <option value='1'>Admin</option>";
-                          }
-                          ?>    
+                          <select class="form-control" name="role">
+                          <?php if ((int) $row['role'] === 1) { ?>
+                            <option value="0">Editor</option>
+                            <option value="1" selected>Admin</option>
+                          <?php } else { ?>
+                            <option value="0" selected>Editor</option>
+                            <option value="1">Admin</option>
+                          <?php } ?>
                           </select>
                       </div>
-                      <input type="submit" name="submit" class="btn btn-primary" value="Update" required />
+                      <div class="form-actions">
+                          <a href="users.php" class="btn btn-default">Cancel</a>
+                          <button type="submit" name="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> Update</button>
+                      </div>
                   </form>
-                  <!-- /Form -->
-                  <?php
-                  
-                }
-            } 
-                  ?>
               </div>
           </div>
       </div>

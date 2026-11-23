@@ -7,19 +7,17 @@ $page_title = "News Site";
 switch ($page) {
     case "single.php":
         if (isset($_GET['id'])) {
-            $sql_title = "SELECT * FROM posts WHERE id = {$_GET['id']}";
+            $sql_title = "SELECT post_title FROM posts WHERE id = " . (int) $_GET['id'];
             $result_title = mysqli_query($conn, $sql_title) or die('Title Query Failed');
             $row_title = mysqli_fetch_assoc($result_title);
             $page_title = $row_title ? $row_title['post_title'] : "No Post Found";
-        } else {
-            $page_title = "No Post Found";
         }
         break;
 
     case "category.php":
         if (isset($_GET['cid'])) {
             $cid = (int) $_GET['cid'];
-            $sql_title = "SELECT * FROM category WHERE id = {$cid}";
+            $sql_title = "SELECT category_name FROM category WHERE id = {$cid}";
             $result_title = mysqli_query($conn, $sql_title) or die('Title Query Failed');
             $row_title = mysqli_fetch_assoc($result_title);
             $page_title = $row_title ? $row_title['category_name'] : "Category";
@@ -45,7 +43,7 @@ switch ($page) {
         break;
 
     default:
-        $page_title = "News Site";
+        $page_title = "News Site — Latest Headlines";
         break;
 }
 ?>
@@ -55,56 +53,55 @@ switch ($page) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title><?php echo htmlspecialchars($page_title); ?></title>
-    <link rel="icon" href="images/news.jpg" type="image/jpeg">
+    <title><?php echo e($page_title); ?></title>
+    <link rel="icon" href="images/logo.png" type="image/png">
     <link rel="stylesheet" href="css/bootstrap.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-<!-- HEADER -->
 <div id="header">
     <div class="container">
         <div class="row">
-            <div class="col-md-offset-4 col-md-4">
-                <a href="<?php echo $hostname; ?>" id="logo"><img src="images/news.jpg" alt="News Site"></a>
+            <div class="col-md-12">
+                <a href="<?php echo $hostname; ?>" id="logo" class="brand-lockup">
+                    <img src="images/logo.png" alt="News Site">
+                    <span class="brand-text">
+                        <strong>NEWS SITE</strong>
+                        <em>Headlines · Stories · Insight</em>
+                    </span>
+                </a>
             </div>
         </div>
     </div>
 </div>
-<!-- /HEADER -->
-<!-- Menu Bar -->
 <div id="menu-bar">
     <div class="container">
         <div class="row">
             <div class="col-md-12">
             <?php
-            if (isset($_GET['cid'])) {
-                $id = (int) $_GET['cid'];
-            }
-
-            $sql = "SELECT * FROM category";
+            $id = isset($_GET['cid']) ? (int) $_GET['cid'] : 0;
+            $sql = "SELECT * FROM category ORDER BY category_name ASC";
             $result = mysqli_query($conn, $sql) or die("Query Failed : Category");
-            $active = "";
             ?>
                 <ul class="menu">
                     <li>
-                        <a class="<?php echo !isset($_GET['cid']) && $page === 'index.php' ? 'active' : ''; ?>" href="<?php echo $hostname; ?>">
-                            <i class="fa-solid fa-house" aria-hidden="true"></i> Home
+                        <a class="<?php echo ($page === 'index.php' && $id === 0) ? 'active' : ''; ?>" href="<?php echo $hostname; ?>">
+                            <i class="fa-solid fa-house"></i> Home
                         </a>
                     </li>
                     <?php
                     while ($row = mysqli_fetch_assoc($result)) {
-                        $active = (isset($_GET['cid']) && (int) $row['id'] === (int) $id) ? "active" : "";
-                        echo "<li><a class='{$active}' href='category.php?cid={$row['id']}'>"
-                            . "<i class='fa-solid fa-folder-open'></i> "
-                            . htmlspecialchars($row['category_name'])
+                        $active = ($id === (int) $row['id']) ? "active" : "";
+                        echo "<li><a class='{$active}' href='category.php?cid=" . (int) $row['id'] . "'>"
+                            . "<i class='fa-solid fa-bookmark'></i> "
+                            . e($row['category_name'])
                             . "</a></li>";
                     }
                     ?>
                     <li>
                         <a href="admin/">
-                            <i class="fa-solid fa-gauge-high" aria-hidden="true"></i> Admin
+                            <i class="fa-solid fa-gauge-high"></i> Admin
                         </a>
                     </li>
                 </ul>
@@ -112,4 +109,3 @@ switch ($page) {
         </div>
     </div>
 </div>
-<!-- /Menu Bar -->

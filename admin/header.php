@@ -1,11 +1,8 @@
 <?php
     include "config.php";
-    session_start();
+    require_admin_session($hostname);
 
-    if (!isset($_SESSION["username"])) {
-        header("Location: {$hostname}/admin/");
-        exit;
-    }
+    $current = basename($_SERVER['PHP_SELF']);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -13,24 +10,27 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <title>ADMIN Panel</title>
-        <link rel="icon" href="../images/news.jpg" type="image/jpeg">
+        <title>Admin Panel | News Site</title>
+        <link rel="icon" href="../images/logo.png" type="image/png">
         <link rel="stylesheet" href="../css/bootstrap.min.css" />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
         <link rel="stylesheet" href="../css/style.css">
     </head>
-    <body>
+    <body class="admin-body">
         <div id="header-admin">
             <div class="container">
-                <div class="row">
-                    <div class="col-md-2">
-                        <a href="post.php"><img class="logo" src="images/news.jpg" alt="News Site Admin"></a>
+                <div class="row vertical-center">
+                    <div class="col-md-4">
+                        <a class="admin-brand" href="post.php">
+                            <img class="logo" src="../images/logo.png" alt="News Site">
+                            <span>News Site <small>Admin</small></span>
+                        </a>
                     </div>
-                    <div class="col-md-offset-6 col-md-4 text-right">
+                    <div class="col-md-8 text-right">
                         <a href="logout.php" class="admin-logout">
-                            <i class="fa-solid fa-user" aria-hidden="true"></i>
-                            Hello <?php echo htmlspecialchars($_SESSION["username"]); ?>,
-                            <i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i> logout
+                            <i class="fa-solid fa-user-shield"></i>
+                            <?php echo e($_SESSION["username"]); ?>
+                            <i class="fa-solid fa-right-from-bracket"></i> Logout
                         </a>
                     </div>
                 </div>
@@ -43,23 +43,23 @@
                        <ul class="admin-menu">
                             <li>
                                 <a href="<?php echo $hostname; ?>">
-                                    <i class="fa-solid fa-globe" aria-hidden="true"></i> News Site
+                                    <i class="fa-solid fa-globe"></i> View Site
                                 </a>
                             </li>
                             <li>
-                                <a href="post.php">
-                                    <i class="fa-solid fa-file-lines" aria-hidden="true"></i> Post
+                                <a class="<?php echo in_array($current, ['post.php','add-post.php','update-post.php'], true) ? 'active' : ''; ?>" href="post.php">
+                                    <i class="fa-solid fa-file-lines"></i> Posts
                                 </a>
                             </li>
-                           <?php if ($_SESSION["role"] == '1') { ?>
+                           <?php if ((string) $_SESSION["role"] === '1') { ?>
                             <li>
-                                <a href="category.php">
-                                    <i class="fa-solid fa-folder-tree" aria-hidden="true"></i> Category
+                                <a class="<?php echo in_array($current, ['category.php','add-category.php','update-category.php'], true) ? 'active' : ''; ?>" href="category.php">
+                                    <i class="fa-solid fa-folder-tree"></i> Categories
                                 </a>
                             </li>
                             <li>
-                                <a href="users.php">
-                                    <i class="fa-solid fa-users" aria-hidden="true"></i> Users
+                                <a class="<?php echo in_array($current, ['users.php','add-user.php','update-user.php'], true) ? 'active' : ''; ?>" href="users.php">
+                                    <i class="fa-solid fa-users"></i> Users
                                 </a>
                             </li>
                             <?php } ?>

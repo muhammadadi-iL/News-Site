@@ -6,7 +6,6 @@
                     <div class="post-container">
                     <?php
                         include "config.php";
-
                         $id = isset($_GET['id']) ? (int) $_GET['id'] : 0;
 
                         $sql = "SELECT posts.id, posts.post_title, posts.post_keywords, posts.post_date, posts.post_author, posts.post_image, category.category_name, users.username, posts.post_content FROM posts
@@ -17,32 +16,29 @@
                         $result = mysqli_query($conn, $sql) or die("query failed.");
                         if (mysqli_num_rows($result) > 0) {
                             while ($row = mysqli_fetch_assoc($result)) {
-                                $img = !empty($row['post_image']) ? "images/" . $row['post_image'] : "images/post_1.jpg";
-                                if (!file_exists(__DIR__ . "/" . $img)) {
-                                    $img = "images/post_1.jpg";
-                                }
+                                $img = post_image_src($row['post_image']);
                         ?>
-                        <div class="post-content single-post">
-                            <h3><?php echo htmlspecialchars($row['post_title']); ?></h3>
+                        <article class="post-content single-post">
+                            <h3><?php echo e($row['post_title']); ?></h3>
                             <div class="post-information">
                                 <span>
-                                    <i class="fa-solid fa-tags" aria-hidden="true"></i>
-                                    <a href="category.php?cid=<?php echo $row['post_content']; ?>"> <?php echo htmlspecialchars($row['category_name']); ?></a>
+                                    <i class="fa-solid fa-tags"></i>
+                                    <a href="category.php?cid=<?php echo (int) $row['post_content']; ?>"> <?php echo e($row['category_name']); ?></a>
                                 </span>
                                 <span>
-                                    <i class="fa-solid fa-user" aria-hidden="true"></i>
-                                    <a href="author.php?aid=<?php echo $row['post_author']; ?>"><?php echo htmlspecialchars($row['username']); ?></a>
+                                    <i class="fa-solid fa-user"></i>
+                                    <a href="author.php?aid=<?php echo (int) $row['post_author']; ?>"><?php echo e($row['username']); ?></a>
                                 </span>
                                 <span>
-                                    <i class="fa-regular fa-calendar-days" aria-hidden="true"></i>
-                                    <?php echo htmlspecialchars($row['post_date']); ?>
+                                    <i class="fa-regular fa-calendar-days"></i>
+                                    <?php echo e($row['post_date']); ?>
                                 </span>
                             </div>
-                            <img class="single-feature-image" src="<?php echo htmlspecialchars($img); ?>" alt=""/>
+                            <img class="single-feature-image" src="<?php echo e($img); ?>" alt="<?php echo e($row['post_title']); ?>"/>
                             <p class="description">
-                            <?php echo nl2br(htmlspecialchars($row['post_keywords'])); ?>
+                            <?php echo nl2br(e($row['post_keywords'])); ?>
                             </p>
-                        </div>
+                        </article>
                         <?php
                             }
                         } else {

@@ -1,13 +1,15 @@
-<!-- Footer -->
-<div id ="footer">
+<div id="footer">
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <span>© Copyright 2022 News | Powered by <a href="http://yahoobaba.net/">Muhammad Adil</a></span>
+                <span>
+                    <i class="fa-regular fa-copyright"></i> <?php echo date('Y'); ?> News Site Admin
+                    &nbsp;|&nbsp;
+                    <a href="https://github.com/muhammadadi-iL" target="_blank" rel="noopener">Muhammad Adil</a>
+                </span>
             </div>
         </div>
     </div>
 </div>
-<!-- /Footer -->
 </body>
 </html>
