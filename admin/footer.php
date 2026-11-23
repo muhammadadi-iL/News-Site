@@ -3,7 +3,7 @@
         <div class="row">
             <div class="col-xs-12">
                 <span>
-                    <i class="fa-regular fa-copyright"></i> <?php echo date('Y'); ?> News Site Admin
+                    <i class="fa-regular fa-copyright"></i> <?php echo date('Y'); ?> Pulse Markets Admin
                     &nbsp;|&nbsp;
                     <a href="https://github.com/muhammadadi-iL" target="_blank" rel="noopener">Muhammad Adil</a>
                 </span>
