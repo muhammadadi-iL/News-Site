@@ -8,7 +8,8 @@ Practice news website in **native PHP + MySQL** (Bootstrap front end, admin pane
 | Contributor | [@muhammadadi-iL](https://github.com/muhammadadi-iL) · `adilm0616@gmail.com` |
 | Local URL | http://localhost/news-site/ |
 | Admin URL | http://localhost/news-site/admin/ |
-| Stack | Homebrew PHP 8.x + Apache (`httpd`) + MySQL |
+| Stack | Homebrew PHP 8.x + Apache (`httpd`) + MySQL + **Vue 3** (CDN) |
+| Live APIs | `api/live-news.php` · `api/search-suggest.php` (BBC / NPR / Guardian RSS) |
 
 ---
 
@@ -211,21 +212,42 @@ chmod 755 admin/upload
 
 Front + admin **Font Awesome 6** (CDN) use karte hain — house, tags, calendar, search, users, etc. Copy English mein hi hai (Home, Admin, Search, read more…).
 
+### Vue.js + realtime search
+
+- **Vue 3** CDN + `js/news-app.js` — header/sidebar pe **autocomplete search**, home pe **Live from the web** feed.
+- Autocomplete local DB posts + live RSS headlines mix karta hai (`api/search-suggest.php`).
+- Live feed BBC / NPR / Guardian RSS se pull hota hai (`api/live-news.php`), har ~3 min auto-refresh.
+- PHP `allow_url_fopen` on hona chahiye (RSS fetch ke liye).
+
+Quick API check:
+
+```bash
+curl -s "http://localhost/news-site/api/live-news.php?limit=3"
+curl -s "http://localhost/news-site/api/search-suggest.php?q=the&live=1"
+```
+
 ---
 
 ## Project layout
 
 ```text
 News-Site/
-├── index.php          # home listing + pagination
+├── index.php          # home + Vue live feed
 ├── single.php         # post detail
 ├── category.php       # posts by category (?cid=)
 ├── author.php         # posts by author (?aid=)
 ├── search.php         # title/keywords search
-├── header.php         # shared head + menu
-├── footer.php
-├── sidebar.php        # search + recent posts
+├── header.php         # shared head + Vue autocomplete
+├── footer.php         # Vue CDN + news-app.js
+├── sidebar.php        # Vue search + recent posts
 ├── config.php         # MySQL + $hostname
+├── api/
+│   ├── live-news.php      # JSON realtime headlines
+│   └── search-suggest.php # autocomplete suggestions
+├── includes/
+│   ├── helpers.php
+│   └── live_feed.php  # RSS fetch (BBC/NPR/Guardian)
+├── js/news-app.js     # Vue SearchAutocomplete + LiveNewsFeed
 ├── admin/             # login, posts, categories, users
 ├── css/               # bootstrap + style.css
 ├── images/            # logos + post images

@@ -57,5 +57,7 @@
   });
 })();
 </script>
+<script src="https://unpkg.com/vue@3.5.13/dist/vue.global.prod.js"></script>
+<script src="js/news-app.js"></script>
 </body>
 </html>

@@ -62,6 +62,7 @@ $break_row = $breaking ? mysqli_fetch_assoc($breaking) : null;
     <link rel="stylesheet" href="css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="css/style.css">
+    <meta name="news-api-base" content="<?php echo e(rtrim($hostname, '/') . '/api'); ?>">
 </head>
 <body>
 <?php if ($break_row) { ?>
@@ -83,8 +84,8 @@ $break_row = $breaking ? mysqli_fetch_assoc($breaking) : null;
                     <em>Independent reporting for every screen</em>
                 </span>
             </a>
-            <div class="header-actions">
-                <a class="btn btn-ghost" href="search.php"><i class="fa-solid fa-magnifying-glass"></i><span>Search</span></a>
+            <div class="header-actions header-search-slot">
+                <div class="header-vue-search" data-vue-search data-initial=""></div>
                 <a class="btn btn-accent" href="admin/"><i class="fa-solid fa-lock"></i><span>Admin</span></a>
             </div>
         </div>

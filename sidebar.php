@@ -1,15 +1,11 @@
 <div id="sidebar" class="col-xs-12 col-sm-12 col-md-4">
     <div class="side-card search-box-container">
         <h4>Search the archive</h4>
-        <form class="search-post" action="search.php" method="GET">
-            <div class="search-row">
-                <input type="text" name="search" class="form-control" placeholder="Find a headline..." value="<?php echo isset($_GET['search']) ? e($_GET['search']) : ''; ?>">
-                <button type="submit" class="btn btn-accent">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                    <span>Go</span>
-                </button>
-            </div>
-        </form>
+        <div
+            data-vue-search
+            data-initial="<?php echo isset($_GET['search']) ? e($_GET['search']) : ''; ?>"
+        ></div>
+        <p class="help-text">Autocomplete mixes local posts + live web headlines (Vue.js).</p>
     </div>
 
     <div class="side-card recent-post-container">

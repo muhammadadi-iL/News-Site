@@ -32,6 +32,8 @@
             <?php } ?>
 
         <div class="container">
+            <div class="live-feed-wrap" data-vue-live data-limit="8"></div>
+
             <div class="row content-grid">
                 <div class="col-xs-12 col-sm-12 col-md-8">
                     <div class="post-container">
