@@ -31,6 +31,22 @@ function e($value)
     return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
 }
 
+function category_icon($name)
+{
+    $key = strtolower(trim((string) $name));
+    $map = [
+        'politics' => 'fa-landmark',
+        'sports' => 'fa-futbol',
+        'business' => 'fa-chart-line',
+        'entertainment' => 'fa-film',
+        'technology' => 'fa-microchip',
+        'health' => 'fa-heart-pulse',
+        'science' => 'fa-flask',
+        'world' => 'fa-earth-americas',
+    ];
+    return $map[$key] ?? 'fa-bookmark';
+}
+
 function require_admin_session($hostname)
 {
     if (session_status() !== PHP_SESSION_ACTIVE) {

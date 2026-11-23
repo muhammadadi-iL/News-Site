@@ -11,7 +11,7 @@ require_admin_role($hostname);
                 <p class="admin-sub">Organize posts into topics readers can browse.</p>
             </div>
             <div class="col-xs-12 col-sm-4 col-md-2">
-                <a class="add-new" href="add-category.php"><i class="fa-solid fa-plus"></i> Add Category</a>
+                <a class="add-new btn btn-brand" href="add-category.php"><i class="fa-solid fa-plus"></i> Add Category</a>
             </div>
             <div class="col-xs-12">
                 <?php

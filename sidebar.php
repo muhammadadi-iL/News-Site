@@ -1,19 +1,18 @@
 <div id="sidebar" class="col-xs-12 col-sm-12 col-md-4">
-    <div class="search-box-container">
+    <div class="search-box-container side-card">
         <h4><i class="fa-solid fa-magnifying-glass"></i> Search</h4>
         <form class="search-post" action="search.php" method="GET">
-            <div class="input-group">
+            <div class="search-row">
                 <input type="text" name="search" class="form-control" placeholder="Search news..." value="<?php echo isset($_GET['search']) ? e($_GET['search']) : ''; ?>">
-                <span class="input-group-btn">
-                    <button type="submit" class="btn btn-danger">
-                        <i class="fa-solid fa-magnifying-glass"></i> Search
-                    </button>
-                </span>
+                <button type="submit" class="btn btn-brand">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <span>Search</span>
+                </button>
             </div>
         </form>
     </div>
 
-    <div class="recent-post-container">
+    <div class="recent-post-container side-card">
         <h4><i class="fa-solid fa-clock-rotate-left"></i> Recent Posts</h4>
         <?php
         include "config.php";
@@ -25,6 +24,7 @@
         if (mysqli_num_rows($result) > 0) {
             while ($row = mysqli_fetch_assoc($result)) {
                 $img = post_image_src($row['post_image']);
+                $icon = category_icon($row['category_name']);
                 ?>
         <div class="recent-post">
             <a class="post-img" href="single.php?id=<?php echo (int) $row['id']; ?>">
@@ -32,16 +32,18 @@
             </a>
             <div class="post-content">
                 <h5><a href="single.php?id=<?php echo (int) $row['id']; ?>"><?php echo e($row['post_title']); ?></a></h5>
-                <span>
-                    <i class="fa-solid fa-tags"></i>
-                    <a href="category.php?cid=<?php echo (int) $row['post_content']; ?>"><?php echo e($row['category_name']); ?></a>
-                </span>
-                <span>
-                    <i class="fa-regular fa-calendar-days"></i>
-                    <?php echo e($row['post_date']); ?>
-                </span>
-                <a class="read-more pull-right" href="single.php?id=<?php echo (int) $row['id']; ?>">
-                    read more <i class="fa-solid fa-arrow-right"></i>
+                <div class="meta-row">
+                    <span class="meta-pill">
+                        <i class="fa-solid <?php echo $icon; ?>"></i>
+                        <a href="category.php?cid=<?php echo (int) $row['post_content']; ?>"><?php echo e($row['category_name']); ?></a>
+                    </span>
+                    <span class="meta-pill">
+                        <i class="fa-regular fa-calendar-days"></i>
+                        <?php echo e($row['post_date']); ?>
+                    </span>
+                </div>
+                <a class="btn btn-soft btn-xs" href="single.php?id=<?php echo (int) $row['id']; ?>">
+                    Read more <i class="fa-solid fa-arrow-right"></i>
                 </a>
             </div>
         </div>

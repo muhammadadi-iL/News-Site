@@ -1,7 +1,7 @@
 <?php include 'header.php'; ?>
     <div id="main-content">
         <div class="container">
-            <div class="row">
+            <div class="row content-grid">
                 <div class="col-xs-12 col-sm-12 col-md-8">
                     <div class="post-container">
                     <?php
@@ -17,19 +17,20 @@
                         if (mysqli_num_rows($result) > 0) {
                             while ($row = mysqli_fetch_assoc($result)) {
                                 $img = post_image_src($row['post_image']);
+                                $icon = category_icon($row['category_name']);
                         ?>
                         <article class="post-content single-post">
                             <h3><?php echo e($row['post_title']); ?></h3>
-                            <div class="post-information">
-                                <span>
-                                    <i class="fa-solid fa-tags"></i>
-                                    <a href="category.php?cid=<?php echo (int) $row['post_content']; ?>"> <?php echo e($row['category_name']); ?></a>
+                            <div class="post-information meta-row">
+                                <span class="meta-pill">
+                                    <i class="fa-solid <?php echo $icon; ?>"></i>
+                                    <a href="category.php?cid=<?php echo (int) $row['post_content']; ?>"><?php echo e($row['category_name']); ?></a>
                                 </span>
-                                <span>
+                                <span class="meta-pill">
                                     <i class="fa-solid fa-user"></i>
                                     <a href="author.php?aid=<?php echo (int) $row['post_author']; ?>"><?php echo e($row['username']); ?></a>
                                 </span>
-                                <span>
+                                <span class="meta-pill">
                                     <i class="fa-regular fa-calendar-days"></i>
                                     <?php echo e($row['post_date']); ?>
                                 </span>
@@ -38,6 +39,10 @@
                             <p class="description">
                             <?php echo nl2br(e($row['post_keywords'])); ?>
                             </p>
+                            <div class="article-actions">
+                                <a class="btn btn-soft" href="<?php echo $hostname; ?>"><i class="fa-solid fa-arrow-left"></i> Back to home</a>
+                                <a class="btn btn-brand" href="category.php?cid=<?php echo (int) $row['post_content']; ?>"><i class="fa-solid <?php echo $icon; ?>"></i> More in <?php echo e($row['category_name']); ?></a>
+                            </div>
                         </article>
                         <?php
                             }

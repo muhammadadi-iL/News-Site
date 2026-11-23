@@ -11,7 +11,7 @@ require_admin_role($hostname);
                   <p class="admin-sub">Admins and editors who can publish content.</p>
               </div>
               <div class="col-xs-12 col-sm-4 col-md-2">
-                  <a class="add-new" href="add-user.php"><i class="fa-solid fa-user-plus"></i> Add User</a>
+                  <a class="add-new btn btn-brand" href="add-user.php"><i class="fa-solid fa-user-plus"></i> Add User</a>
               </div>
               <div class="col-xs-12">
                   <?php

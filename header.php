@@ -63,25 +63,25 @@ switch ($page) {
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-<div id="header">
+<header id="header">
     <div class="container">
-        <div class="row">
-            <div class="col-xs-12">
-                <a href="<?php echo $hostname; ?>" id="logo" class="brand-lockup">
-                    <img src="images/logo.png" alt="News Site">
-                    <span class="brand-text">
-                        <strong>NEWS SITE</strong>
-                        <em>Headlines · Stories · Insight</em>
-                    </span>
-                </a>
+        <div class="header-inner">
+            <a href="<?php echo $hostname; ?>" id="logo" class="brand-lockup">
+                <img src="images/logo.png" alt="News Site">
+                <span class="brand-text">
+                    <strong>NEWS SITE</strong>
+                    <em>Headlines · Stories · Insight</em>
+                </span>
+            </a>
+            <div class="header-actions">
+                <a class="btn btn-ghost" href="search.php"><i class="fa-solid fa-magnifying-glass"></i><span>Search</span></a>
+                <a class="btn btn-light-solid" href="admin/"><i class="fa-solid fa-lock"></i><span>Admin</span></a>
             </div>
         </div>
     </div>
-</div>
-<div id="menu-bar">
+</header>
+<nav id="menu-bar">
     <div class="container">
-        <div class="row">
-            <div class="col-xs-12">
             <?php
             $id = isset($_GET['cid']) ? (int) $_GET['cid'] : 0;
             $sql = "SELECT * FROM category ORDER BY category_name ASC";
@@ -101,20 +101,14 @@ switch ($page) {
                         <?php
                         while ($row = mysqli_fetch_assoc($result)) {
                             $active = ($id === (int) $row['id']) ? "active" : "";
+                            $icon = category_icon($row['category_name']);
                             echo "<li><a class='{$active}' href='category.php?cid=" . (int) $row['id'] . "'>"
-                                . "<i class='fa-solid fa-bookmark'></i> "
+                                . "<i class='fa-solid {$icon}'></i> "
                                 . e($row['category_name'])
                                 . "</a></li>";
                         }
                         ?>
-                        <li>
-                            <a href="admin/">
-                                <i class="fa-solid fa-gauge-high"></i> Admin
-                            </a>
-                        </li>
                     </ul>
                 </div>
-            </div>
-        </div>
     </div>
-</div>
+</nav>

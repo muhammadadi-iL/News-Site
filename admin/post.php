@@ -7,7 +7,7 @@
                   <p class="admin-sub">Manage news articles — create, edit or delete.</p>
               </div>
               <div class="col-xs-12 col-sm-4 col-md-2">
-                  <a class="add-new" href="add-post.php"><i class="fa-solid fa-plus"></i> Add Post</a>
+                  <a class="add-new btn btn-brand" href="add-post.php"><i class="fa-solid fa-plus"></i> Add Post</a>
               </div>
               <div class="col-xs-12">
                   <?php

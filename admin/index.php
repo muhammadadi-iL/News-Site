@@ -29,7 +29,7 @@ if (isset($_POST['login'])) {
 <html lang="en">
    <head>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
         <title>Admin Login | News Site</title>
         <link rel="icon" href="../images/favicon.ico" sizes="any">
@@ -40,33 +40,33 @@ if (isset($_POST['login'])) {
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
         <link rel="stylesheet" href="../css/style.css">
     </head>
-    <body class="admin-body">
+    <body class="admin-body login-page">
         <div id="wrapper-admin" class="body-content">
             <div class="container">
                 <div class="row">
                     <div class="col-xs-12 col-sm-8 col-sm-offset-2 col-md-4 col-md-offset-4">
                         <div class="login-card">
                         <img class="logo" src="../images/logo.png" alt="News Site">
-                        <h3 class="heading"><i class="fa-solid fa-lock"></i> Admin Login</h3>
+                        <h3 class="heading"><i class="fa-solid fa-shield-halved"></i> Admin Login</h3>
                         <?php if ($error) { echo '<div class="alert alert-danger">' . e($error) . '</div>'; } ?>
-                        <form action="<?php echo e($_SERVER['PHP_SELF']); ?>" method="POST">
+                        <form class="login-form" action="<?php echo e($_SERVER['PHP_SELF']); ?>" method="POST">
                             <div class="form-group">
-                                <label><i class="fa-solid fa-user"></i> Username</label>
-                                <input type="text" name="username" class="form-control" placeholder="admin" required>
+                                <label for="username"><i class="fa-solid fa-user"></i> Username</label>
+                                <input type="text" id="username" name="username" class="form-control" placeholder="admin" required>
                             </div>
                             <div class="form-group">
-                                <label><i class="fa-solid fa-key"></i> Password</label>
-                                <input type="password" name="password" class="form-control" placeholder="••••••" required>
+                                <label for="password"><i class="fa-solid fa-key"></i> Password</label>
+                                <input type="password" id="password" name="password" class="form-control" placeholder="••••••" required>
                             </div>
-                            <button type="submit" name="login" class="btn btn-primary btn-block">
+                            <button type="submit" name="login" class="btn btn-brand btn-block btn-lg">
                                 <i class="fa-solid fa-right-to-bracket"></i> Login
                             </button>
                         </form>
-                        <p class="help-text" style="margin-top:14px;text-align:center;">
+                        <p class="help-text login-hint">
                             Default: <strong>admin</strong> / <strong>admin</strong>
                         </p>
-                        <p style="text-align:center;margin-top:8px;">
-                            <a href="<?php echo $hostname; ?>"><i class="fa-solid fa-arrow-left"></i> Back to site</a>
+                        <p class="login-back">
+                            <a class="btn btn-soft btn-block" href="<?php echo $hostname; ?>"><i class="fa-solid fa-arrow-left"></i> Back to site</a>
                         </p>
                         </div>
                     </div>
