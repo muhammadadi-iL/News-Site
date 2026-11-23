@@ -61,10 +61,11 @@ $break_row = $breaking ? mysqli_fetch_assoc($breaking) : null;
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title><?php echo e($page_title); ?></title>
     <meta name="description" content="<?php echo e($brand['tagline']); ?>">
-    <link rel="icon" href="images/favicon.ico" sizes="any">
-    <link rel="icon" href="images/logo.svg" type="image/svg+xml">
-    <link rel="icon" href="images/favicon-32.png" type="image/png" sizes="32x32">
-    <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+    <link rel="icon" href="images/favicon.ico?v=pulse2" sizes="any">
+    <link rel="icon" href="images/logo.svg?v=pulse2" type="image/svg+xml">
+    <link rel="icon" href="images/favicon-32.png?v=pulse2" type="image/png" sizes="32x32">
+    <link rel="icon" href="images/favicon-16.png?v=pulse2" type="image/png" sizes="16x16">
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png?v=pulse2">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
