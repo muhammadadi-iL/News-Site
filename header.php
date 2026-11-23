@@ -54,7 +54,10 @@ switch ($page) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title><?php echo e($page_title); ?></title>
-    <link rel="icon" href="images/logo.png" type="image/png">
+    <link rel="icon" href="images/favicon.ico" sizes="any">
+    <link rel="icon" href="images/favicon-32.png" type="image/png" sizes="32x32">
+    <link rel="icon" href="images/logo.png" type="image/png" sizes="256x256">
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
     <link rel="stylesheet" href="css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="css/style.css">

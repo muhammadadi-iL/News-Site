@@ -12,8 +12,8 @@ function post_image_src($filename, $prefix = '')
     }
 
     $candidates = [
-        'admin/upload/' . $filename,
         'images/' . $filename,
+        'admin/upload/' . $filename,
     ];
 
     $root = dirname(__DIR__);
