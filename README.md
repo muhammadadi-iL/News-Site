@@ -1,30 +1,44 @@
 # Pulse Markets — Crypto & Forex News
 
-PHP + MySQL news CMS focused on **cryptocurrency & forex**, with **realtime prices/rates**, live market headlines (Vue 3), and a full **admin panel**.
+PHP + MySQL market-news CMS for **cryptocurrency & forex**: live prices, interactive charts, realtime wire stories (Vue 3), editorial posts, and a full **admin panel**.
 
 | | |
 | --- | --- |
 | GitHub | https://github.com/muhammadadi-iL/News-Site |
 | Contributor | [@muhammadadi-iL](https://github.com/muhammadadi-iL) · `adilm0616@gmail.com` |
-| Local URL | http://localhost/news-site/ |
+| Home | http://localhost/news-site/ |
 | Markets | http://localhost/news-site/markets.php |
+| Stories | http://localhost/news-site/stories.php |
 | Admin | http://localhost/news-site/admin/ |
-| Stack | PHP 8 + Apache + MySQL + Vue 3 (CDN) |
+| Stack | PHP 8 + Apache (`httpd`) + MySQL + Vue 3 + Chart.js (CDN) |
 
-**Admin login:** `admin` / `admin` (MD5 legacy) · editor: `editor` / `editor`
+**Admin login:** `admin` / `admin` · editor: `editor` / `editor`  
+(Passwords stored as legacy MD5 in the seed DB.)
 
 ---
 
-## What you get
+## Features
 
-- **Editorial CMS** — posts, categories (Crypto, Forex, Bitcoin, Ethereum, Analysis), users
-- **Live crypto board** — CoinGecko (BTC, ETH, SOL, XRP, BNB, ADA, DOGE, DOT)
-- **Live forex board** — Frankfurter G10-style pairs (EUR/USD, GBP/USD, USD/JPY, …)
-- **Interactive charts** — Chart.js line charts (crypto 1D–90D, forex 7D–90D) on Home + Markets
-- **Scrolling ticker** — prices across the top of every page
-- **Live market stories** — featured wire + story rail + detail panel (`stories.php`)
-- **Vue autocomplete search** — local posts + live headlines
-- **Admin CRUD** — create/edit/delete posts, categories, users + image upload
+### Front desk
+- **Brand:** Pulse Markets — teal market-desk UI (Sora + IBM Plex Sans)
+- **Live ticker** — crypto + FX tape across every page
+- **Market snapshot** — CoinGecko crypto board + Frankfurter forex board
+- **Charts** — Chart.js ranges (crypto `1D/7D/30D/90D`, forex `7D/30D/90D`)
+- **Live market stories** — featured wire, story rail, detail panel, source link
+- **Dedicated Stories page** — fuller realtime wire desk (`stories.php`)
+- **Desk briefings** — editorial CMS posts with categories and pagination
+- **Autocomplete search** — local posts + live headlines (Vue)
+- **Responsive layout** — phone / tablet / desktop shells for home, markets, stories, single, category, search, author
+
+### Categories (seed)
+Crypto · Forex · Bitcoin · Ethereum · Analysis
+
+### Admin
+- Login / logout sessions
+- Posts CRUD + image upload (`admin/upload/`)
+- Categories CRUD (admin role)
+- Users CRUD (admin role)
+- View site shortcut back to the front desk
 
 ---
 
@@ -33,11 +47,12 @@ PHP + MySQL news CMS focused on **cryptocurrency & forex**, with **realtime pric
 ```bash
 brew install php httpd mysql
 brew services start mysql php httpd
+
 cd /Users/mac/Projects/News-Site
 mysql -u root -h 127.0.0.1 --protocol=TCP < database/news-cms.sql
 ```
 
-Apache Alias (example):
+Apache Alias example:
 
 ```apache
 Alias /news-site "/Users/mac/Projects/News-Site"
@@ -49,30 +64,67 @@ Alias /news-site "/Users/mac/Projects/News-Site"
 </Directory>
 ```
 
-`config.php` expects DB `news_site`, user `root`, empty password, hostname `http://localhost/news-site`.
+Then:
+
+```bash
+brew services restart httpd
+open http://localhost/news-site/
+```
+
+### Config
+
+`config.php` / `admin/config.php`:
+
+| Setting | Value |
+| --- | --- |
+| `$hostname` | `http://localhost/news-site` |
+| DB host | `localhost` |
+| DB user | `root` |
+| DB password | *(empty)* |
+| Database | `news_site` |
+
+PHP **`allow_url_fopen`** must be **On** (live prices, charts, RSS).
+
+---
+
+## Pages
+
+| URL | Purpose |
+| --- | --- |
+| `/` | Hero + snapshot + live stories + charts + editorial briefings |
+| `/markets.php` | Charts, price boards, live stories |
+| `/stories.php` | Realtime wire desk with detail panel |
+| `/single.php?id=` | Full briefing + related notes + compact live stories |
+| `/category.php?cid=` | Posts by desk category |
+| `/author.php?aid=` | Posts by author |
+| `/search.php?search=` | Local archive search |
+| `/admin/` | CMS login + CRUD |
 
 ---
 
 ## Realtime APIs
 
-| Endpoint | Source |
+| Endpoint | Data |
 | --- | --- |
-| `api/crypto.php` | CoinGecko markets |
-| `api/forex.php` | Frankfurter latest |
-| `api/chart-crypto.php` | CoinGecko market chart |
-| `api/chart-forex.php` | Frankfurter timeseries |
-| `api/live-news.php` | Crypto/FX RSS |
-| `api/search-suggest.php` | Local DB + live headlines |
+| `api/crypto.php` | Live crypto markets (CoinGecko) |
+| `api/forex.php` | Live FX spots (Frankfurter) |
+| `api/chart-crypto.php?id=bitcoin&days=7` | Crypto history chart |
+| `api/chart-forex.php?base=EUR&quote=USD&days=30` | FX history chart |
+| `api/live-news.php?limit=8` | Crypto/FX RSS stories |
+| `api/search-suggest.php?q=btc&live=1` | Autocomplete (local + live) |
 
-Short file cache lives in `cache/` (~45–90s) so autocomplete stays fast.
+Wire sources: **CoinTelegraph**, **CoinDesk**, **ForexLive** (with fallbacks).  
+Short JSON cache in `cache/` (~45–180s) keeps autocomplete and boards fast.
+
+Quick checks:
 
 ```bash
 curl -s "http://localhost/news-site/api/crypto.php" | head
 curl -s "http://localhost/news-site/api/forex.php" | head
+curl -s "http://localhost/news-site/api/chart-crypto.php?id=bitcoin&days=7" | head
 curl -s "http://localhost/news-site/api/live-news.php?limit=3"
+curl -s "http://localhost/news-site/api/search-suggest.php?q=bitcoin&live=1"
 ```
-
-PHP `allow_url_fopen` must be on.
 
 ---
 
@@ -80,28 +132,61 @@ PHP `allow_url_fopen` must be on.
 
 ```text
 News-Site/
-├── index.php              # hero + crypto/forex boards + live news + posts
-├── markets.php            # full live markets desk
-├── single.php / category.php / author.php / search.php
+├── index.php                 # home desk
+├── markets.php               # live markets + charts
+├── stories.php               # realtime story desk
+├── single.php                # post detail
+├── category.php / author.php / search.php
 ├── header.php / footer.php / sidebar.php
-├── api/crypto.php / forex.php / live-news.php / search-suggest.php
-├── includes/helpers.php / markets.php / live_feed.php
-├── js/news-app.js         # Vue ticker, boards, feed, autocomplete
-├── admin/                 # login + CRUD
-├── database/news-cms.sql
-└── cache/                 # gitignored JSON cache
+├── config.php
+├── api/
+│   ├── crypto.php
+│   ├── forex.php
+│   ├── chart-crypto.php
+│   ├── chart-forex.php
+│   ├── live-news.php
+│   └── search-suggest.php
+├── includes/
+│   ├── helpers.php
+│   ├── markets.php           # CoinGecko + Frankfurter + chart helpers
+│   └── live_feed.php         # RSS/Atom fetch + cache
+├── js/news-app.js            # Vue ticker, boards, charts, stories, search
+├── css/style.css
+├── images/                   # logo.svg, favicons, post art
+├── admin/                    # login + posts/categories/users CRUD
+├── database/news-cms.sql     # schema + Pulse Markets seed
+├── cache/                    # gitignored API cache
+├── CONTRIBUTORS.md
+└── README.md
 ```
 
 ---
 
-## Git commits
+## Schema note (legacy field names)
+
+`posts.post_content` stores the **category id** (not HTML body).  
+Story/body text lives in `posts.post_keywords`.
+
+```sql
+LEFT JOIN category ON posts.post_content = category.id
+LEFT JOIN users ON posts.post_author = users.id
+```
+
+---
+
+## Git commits (contribution graph)
+
+Use this author so GitHub counts activity for **muhammadadi-iL**:
 
 ```text
 Muhammad Adil <adilm0616@gmail.com>
 ```
 
+Email must stay **verified** on GitHub:  
+https://github.com/muhammadadi-iL/News-Site/graphs/contributors
+
 ---
 
-## License / credit
+## Disclaimer
 
-Learning / practice market-news CMS. Prices and third-party headlines are for demo use; always verify against official sources before trading decisions.
+Learning / demo market-news project. Live prices and third-party headlines are for practice only — verify against official sources before any trading decision.
