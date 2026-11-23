@@ -37,6 +37,11 @@
                 <div data-vue-forex data-limit="6"></div>
             </div>
 
+            <div class="markets-split charts-split">
+                <div data-vue-crypto-chart></div>
+                <div data-vue-forex-chart></div>
+            </div>
+
             <div class="live-feed-wrap" data-vue-live data-limit="8"></div>
 
             <div class="row content-grid">

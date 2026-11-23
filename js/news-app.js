@@ -1,8 +1,8 @@
 /**
- * Vue 3 — Pulse Markets: live prices, forex, news, autocomplete
+ * Vue 3 — Pulse Markets: live prices, forex, charts, news, autocomplete
  */
 (function () {
-  const { createApp, ref, computed, onMounted, onBeforeUnmount } = Vue;
+  const { createApp, ref, computed, watch, onMounted, onBeforeUnmount, nextTick } = Vue;
 
   function apiBase() {
     const meta = document.querySelector('meta[name="news-api-base"]');
@@ -326,6 +326,266 @@
     `,
   };
 
+  const CRYPTO_OPTIONS = [
+    { id: 'bitcoin', symbol: 'BTC' },
+    { id: 'ethereum', symbol: 'ETH' },
+    { id: 'solana', symbol: 'SOL' },
+    { id: 'ripple', symbol: 'XRP' },
+    { id: 'binancecoin', symbol: 'BNB' },
+    { id: 'cardano', symbol: 'ADA' },
+    { id: 'dogecoin', symbol: 'DOGE' },
+    { id: 'polkadot', symbol: 'DOT' },
+  ];
+
+  const FOREX_OPTIONS = [
+    { base: 'EUR', quote: 'USD', label: 'EUR/USD' },
+    { base: 'GBP', quote: 'USD', label: 'GBP/USD' },
+    { base: 'USD', quote: 'JPY', label: 'USD/JPY' },
+    { base: 'USD', quote: 'CHF', label: 'USD/CHF' },
+    { base: 'AUD', quote: 'USD', label: 'AUD/USD' },
+    { base: 'USD', quote: 'CAD', label: 'USD/CAD' },
+    { base: 'EUR', quote: 'GBP', label: 'EUR/GBP' },
+    { base: 'NZD', quote: 'USD', label: 'NZD/USD' },
+  ];
+
+  function buildLineChart(canvas, labels, values, color) {
+    if (typeof Chart === 'undefined' || !canvas) return null;
+    const up = values.length > 1 && values[values.length - 1] >= values[0];
+    const stroke = color || (up ? '#059669' : '#dc2626');
+    return new Chart(canvas.getContext('2d'), {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [{
+          data: values,
+          borderColor: stroke,
+          backgroundColor: stroke + '22',
+          borderWidth: 2,
+          fill: true,
+          tension: 0.25,
+          pointRadius: 0,
+          pointHoverRadius: 4,
+        }],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label(ctx) {
+                const v = ctx.parsed.y;
+                return v == null ? '' : Number(v).toLocaleString(undefined, { maximumFractionDigits: 6 });
+              },
+            },
+          },
+        },
+        scales: {
+          x: {
+            grid: { display: false },
+            ticks: { maxTicksLimit: 6, color: '#5b6e6c', font: { size: 11 } },
+          },
+          y: {
+            grid: { color: 'rgba(15, 61, 58, 0.08)' },
+            ticks: {
+              color: '#5b6e6c',
+              font: { size: 11 },
+              callback(v) {
+                return Number(v).toLocaleString(undefined, { maximumFractionDigits: 4 });
+              },
+            },
+          },
+        },
+      },
+    });
+  }
+
+  function formatChartLabel(ts, days) {
+    const d = new Date(ts);
+    if (days <= 1) {
+      return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+    if (days <= 7) {
+      return d.toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit' });
+    }
+    return d.toLocaleDateString([], { month: 'short', day: 'numeric' });
+  }
+
+  const CryptoChart = {
+    setup() {
+      const coinId = ref('bitcoin');
+      const days = ref(7);
+      const loading = ref(true);
+      const error = ref('');
+      const meta = ref({ symbol: 'BTC', last: null, change: null });
+      const canvas = ref(null);
+      let chart = null;
+      let abortCtrl = null;
+
+      async function load() {
+        loading.value = true;
+        error.value = '';
+        if (abortCtrl) abortCtrl.abort();
+        abortCtrl = new AbortController();
+        try {
+          const url = apiBase() + '/chart-crypto.php?id=' + encodeURIComponent(coinId.value) + '&days=' + days.value;
+          const res = await fetch(url, { signal: abortCtrl.signal });
+          const data = await res.json();
+          const points = data.points || [];
+          if (!points.length) throw new Error('empty');
+          const values = points.map((p) => p.v);
+          const labels = points.map((p) => formatChartLabel(p.t, days.value));
+          const first = values[0];
+          const last = values[values.length - 1];
+          meta.value = {
+            symbol: data.symbol || '—',
+            last,
+            change: first ? ((last - first) / first) * 100 : null,
+          };
+          await nextTick();
+          if (chart) { chart.destroy(); chart = null; }
+          chart = buildLineChart(canvas.value, labels, values);
+        } catch (e) {
+          if (e.name !== 'AbortError') error.value = 'Crypto chart unavailable right now.';
+        } finally {
+          loading.value = false;
+        }
+      }
+
+      watch([coinId, days], load);
+      onMounted(load);
+      onBeforeUnmount(() => {
+        if (abortCtrl) abortCtrl.abort();
+        if (chart) chart.destroy();
+      });
+
+      return { coinId, days, loading, error, meta, canvas, CRYPTO_OPTIONS, money, pct, load };
+    },
+    template: `
+      <section class="chart-card">
+        <div class="chart-head">
+          <div>
+            <h2><i class="fa-solid fa-chart-line"></i> Crypto chart</h2>
+            <p class="board-sub" v-if="meta.last != null">
+              {{ meta.symbol }}/USD · \${{ money(meta.last) }}
+              <span v-if="meta.change != null" :class="meta.change >= 0 ? 'up' : 'down'">{{ pct(meta.change) }}</span>
+              over selected range
+            </p>
+          </div>
+          <div class="chart-controls">
+            <select v-model="coinId" class="form-control chart-select" aria-label="Crypto asset">
+              <option v-for="c in CRYPTO_OPTIONS" :key="c.id" :value="c.id">{{ c.symbol }}</option>
+            </select>
+            <div class="range-pills">
+              <button type="button" :class="{ active: days === 1 }" @click="days = 1">1D</button>
+              <button type="button" :class="{ active: days === 7 }" @click="days = 7">7D</button>
+              <button type="button" :class="{ active: days === 30 }" @click="days = 30">30D</button>
+              <button type="button" :class="{ active: days === 90 }" @click="days = 90">90D</button>
+            </div>
+          </div>
+        </div>
+        <p v-if="loading" class="board-status">Loading chart…</p>
+        <p v-if="error" class="board-status error">{{ error }}</p>
+        <div class="chart-canvas-wrap">
+          <canvas ref="canvas"></canvas>
+        </div>
+      </section>
+    `,
+  };
+
+  const ForexChart = {
+    setup() {
+      const pairKey = ref('EUR/USD');
+      const days = ref(30);
+      const loading = ref(true);
+      const error = ref('');
+      const meta = ref({ pair: 'EUR/USD', last: null, change: null });
+      const canvas = ref(null);
+      let chart = null;
+      let abortCtrl = null;
+
+      const selected = computed(() => FOREX_OPTIONS.find((p) => p.label === pairKey.value) || FOREX_OPTIONS[0]);
+
+      async function load() {
+        loading.value = true;
+        error.value = '';
+        if (abortCtrl) abortCtrl.abort();
+        abortCtrl = new AbortController();
+        const p = selected.value;
+        try {
+          const url = apiBase() + '/chart-forex.php?base=' + encodeURIComponent(p.base)
+            + '&quote=' + encodeURIComponent(p.quote) + '&days=' + days.value;
+          const res = await fetch(url, { signal: abortCtrl.signal });
+          const data = await res.json();
+          const points = data.points || [];
+          if (!points.length) throw new Error('empty');
+          const values = points.map((pt) => pt.v);
+          const labels = points.map((pt) => formatChartLabel(pt.t, days.value));
+          const first = values[0];
+          const last = values[values.length - 1];
+          meta.value = {
+            pair: data.pair || p.label,
+            last,
+            change: first ? ((last - first) / first) * 100 : null,
+          };
+          await nextTick();
+          if (chart) { chart.destroy(); chart = null; }
+          chart = buildLineChart(canvas.value, labels, values, '#0d9488');
+        } catch (e) {
+          if (e.name !== 'AbortError') error.value = 'Forex chart unavailable right now.';
+        } finally {
+          loading.value = false;
+        }
+      }
+
+      watch([pairKey, days], load);
+      onMounted(load);
+      onBeforeUnmount(() => {
+        if (abortCtrl) abortCtrl.abort();
+        if (chart) chart.destroy();
+      });
+
+      function fxDigits(pair) {
+        if (!pair) return 5;
+        if (pair.includes('JPY')) return 3;
+        return 5;
+      }
+
+      return { pairKey, days, loading, error, meta, canvas, FOREX_OPTIONS, money, pct, fxDigits, load };
+    },
+    template: `
+      <section class="chart-card">
+        <div class="chart-head">
+          <div>
+            <h2><i class="fa-solid fa-chart-area"></i> Forex chart</h2>
+            <p class="board-sub" v-if="meta.last != null">
+              {{ meta.pair }} · {{ money(meta.last, fxDigits(meta.pair)) }}
+              <span v-if="meta.change != null" :class="meta.change >= 0 ? 'up' : 'down'">{{ pct(meta.change) }}</span>
+              over selected range
+            </p>
+          </div>
+          <div class="chart-controls">
+            <select v-model="pairKey" class="form-control chart-select" aria-label="Forex pair">
+              <option v-for="p in FOREX_OPTIONS" :key="p.label" :value="p.label">{{ p.label }}</option>
+            </select>
+            <div class="range-pills">
+              <button type="button" :class="{ active: days === 7 }" @click="days = 7">7D</button>
+              <button type="button" :class="{ active: days === 30 }" @click="days = 30">30D</button>
+              <button type="button" :class="{ active: days === 90 }" @click="days = 90">90D</button>
+            </div>
+          </div>
+        </div>
+        <p v-if="loading" class="board-status">Loading chart…</p>
+        <p v-if="error" class="board-status error">{{ error }}</p>
+        <div class="chart-canvas-wrap">
+          <canvas ref="canvas"></canvas>
+        </div>
+      </section>
+    `,
+  };
+
   const LiveNewsFeed = {
     props: { limit: { type: Number, default: 8 } },
     setup(props) {
@@ -426,6 +686,12 @@
       mountOnce(el, (node) => {
         createApp(ForexBoard, { limit: parseInt(node.getAttribute('data-limit') || '8', 10) }).mount(node);
       });
+    });
+    document.querySelectorAll('[data-vue-crypto-chart]').forEach((el) => {
+      mountOnce(el, (node) => createApp(CryptoChart).mount(node));
+    });
+    document.querySelectorAll('[data-vue-forex-chart]').forEach((el) => {
+      mountOnce(el, (node) => createApp(ForexChart).mount(node));
     });
   }
 

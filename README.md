@@ -20,6 +20,7 @@ PHP + MySQL news CMS focused on **cryptocurrency & forex**, with **realtime pric
 - **Editorial CMS** — posts, categories (Crypto, Forex, Bitcoin, Ethereum, Analysis), users
 - **Live crypto board** — CoinGecko (BTC, ETH, SOL, XRP, BNB, ADA, DOGE, DOT)
 - **Live forex board** — Frankfurter G10-style pairs (EUR/USD, GBP/USD, USD/JPY, …)
+- **Interactive charts** — Chart.js line charts (crypto 1D–90D, forex 7D–90D) on Home + Markets
 - **Scrolling ticker** — prices across the top of every page
 - **Live market news** — CoinTelegraph, CoinDesk, ForexLive RSS
 - **Vue autocomplete search** — local posts + live headlines
@@ -58,6 +59,8 @@ Alias /news-site "/Users/mac/Projects/News-Site"
 | --- | --- |
 | `api/crypto.php` | CoinGecko markets |
 | `api/forex.php` | Frankfurter latest |
+| `api/chart-crypto.php` | CoinGecko market chart |
+| `api/chart-forex.php` | Frankfurter timeseries |
 | `api/live-news.php` | Crypto/FX RSS |
 | `api/search-suggest.php` | Local DB + live headlines |
 

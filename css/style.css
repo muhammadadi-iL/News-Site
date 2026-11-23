@@ -1181,6 +1181,87 @@ img.logo { width: 100%; height: auto; display: block; }
 .markets-page { padding: 28px 15px 40px; }
 .markets-page-head { margin-bottom: 18px; }
 
+.chart-card {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 18px;
+  box-shadow: var(--shadow);
+}
+
+.chart-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.chart-head h2 {
+  margin: 0 0 4px;
+  font-family: var(--font-display);
+  font-size: 20px;
+}
+
+.chart-head .up { color: var(--up); font-weight: 700; margin-left: 6px; }
+.chart-head .down { color: var(--down); font-weight: 700; margin-left: 6px; }
+
+.chart-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.chart-select {
+  width: auto;
+  min-width: 110px;
+  height: 38px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  padding: 6px 10px;
+  font-weight: 600;
+}
+
+.range-pills {
+  display: inline-flex;
+  gap: 4px;
+  padding: 3px;
+  border-radius: 999px;
+  background: #eef6f3;
+  border: 1px solid var(--line);
+}
+
+.range-pills button {
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font-weight: 700;
+  font-size: 12px;
+  padding: 7px 10px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.range-pills button.active {
+  background: var(--accent);
+  color: #fff;
+}
+
+.chart-canvas-wrap {
+  position: relative;
+  height: 280px;
+  margin-top: 6px;
+}
+
+@media (max-width: 767px) {
+  .chart-canvas-wrap { height: 220px; }
+  .chart-controls { width: 100%; justify-content: stretch; }
+  .chart-select { flex: 1; }
+}
+
 .side-markets .btn-block { width: 100%; margin-bottom: 8px; }
 
 /* Vue autocomplete + live feed */
